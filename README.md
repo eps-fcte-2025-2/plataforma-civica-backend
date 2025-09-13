@@ -1,6 +1,7 @@
 # API - Denuncias
 
 Estrutura de pastas:
+
 ```
 rootFolder
 ├── config/                     # Configurações da aplicação
