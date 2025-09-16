@@ -13,14 +13,14 @@ rootFolder
 │   ├── reports/                    # Módulo de denúncias
 │   ├── dashboard/                  # Módulo dos dashboards sobre os dados de denúncias
 │   └── [module]/                   # Exemplo de um módulo qualquer
+│       ├── controllers/
+│       ├── dtos/                       # DTOS de entrada e saida da API
+│       ├── factories/                  # Factories dos use cases e dos controllers
 │       ├── infra/
 │       │   ├── repositories/               # Implementação das interfaces dos repositorios
 │       │   └── routes/                     # Rotas desse módulo
-│       ├── dtos/                       # DTOS de entrada e saida da API
-│       ├── usecases/
-│       ├── controllers/
 │       ├── repositories/               # Interfaces dos repositórios
-│       └── factories/                  # Factories dos use cases e dos controllers
+│       └── usecases/
 └── shared/                     # Componentes compartilhados
     ├── dtos/                   # DTOs comuns
     ├── errors/                 # HTTP Errors

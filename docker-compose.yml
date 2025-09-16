@@ -1,0 +1,26 @@
+services:
+  backend:
+    build: .
+    restart: always
+    ports:
+      - "8080:3333"
+    volumes:
+      - .:/app
+      - /app/node_modules # Compatibilidade com mac e windows (Desvantagem: precisa buildar sempre que baixar nova dependência)
+      # Comente a linha acima caso use linux
+
+  database:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    command: [ "postgres", "-c", "port=${POSTGRES_PORT}" ]
+
+volumes:
+  postgres_data:

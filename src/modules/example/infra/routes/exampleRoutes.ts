@@ -1,5 +1,5 @@
 import { PaginateQuerySchema } from "../../../../shared/dtos/PaginationSchema";
-import { FastifyTypedInstance } from "../../../../types/types";
+import { FastifyTypedInstance } from "../../../../shared/types/types";
 import { ControllerExample } from "../../controllers/ControllerExample";
 import { RequestDTOExampleSchema } from '../../dtos/RequestDTOExample';
 import { ResponseDTOExampleSchema } from '../../dtos/ResponseDTOExample';
