@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main", "dev" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Run push-only step
+        if: github.event_name == 'push'
+        run: echo "This runs only on push!"
+
+      - name: Run PR-only step
+        if: github.event_name == 'pull_request'
+        run: echo "This runs only on pull request!"
