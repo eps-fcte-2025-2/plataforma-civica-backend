@@ -55,13 +55,13 @@ enum TipoEvidencia {
 model Denuncia {
   id                   String               @id @default(uuid()) @db.Uuid
   tipoDenuncia         TipoDenuncia
-  torneio              String // Adicionar tabela de enums
-  data                 DateTime
   descricao            String
   comoSoube            ComoSoube?
   pontualOuDisseminado PontualOuDisseminado @default(PONTUAL)
   frequencia           Frequencia           @default(ISOLADO)
+  dataDenuncia         DateTime             @default(now())
 
+  partidas          Partida[]
   clubesEnvolvidos  Clube[]
   pessoasEnvolvidas Pessoa[]
   focosManipulacao  DenunciaFoco[]
@@ -76,6 +76,24 @@ model Municipio {
   nome     String
   uf       String
   Denuncia Denuncia[]
+  Partida  Partida[]
+}
+
+model Partida {
+  id String @id @default(uuid()) @db.Uuid
+  
+  torneio        String
+  dataPartida    DateTime
+  localPartida   String
+  timeA          String?
+  timeB          String?
+  observacoes    String?
+  
+  denuncia   Denuncia  @relation(fields: [denunciaId], references: [id], onDelete: Cascade)
+  denunciaId String    @db.Uuid
+  
+  municipio   Municipio @relation(fields: [municipioId], references: [id])
+  municipioId String    @db.Uuid
 }
 
 model Pessoa {
