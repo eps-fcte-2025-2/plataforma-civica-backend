@@ -14,6 +14,116 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum TipoDenuncia {
+  PARTIDA_ESPECIFICA
+  ESQUEMA_DE_MANIPULACAO
+}
+
+enum ComoSoube {
+  VITIMA
+  TERCEIROS
+  INTERNET
+  PRESENCIAL
+  OBSERVACAO
+  OUTROS
+}
+
+enum PontualOuDisseminado {
+  PONTUAL
+  DISSEMINADO
+}
+
+enum Frequencia {
+  ISOLADO
+  FREQUENTE
+}
+
+enum FocoManipulacao {
+  ATLETAS_DIRIGENTES_COMISSAO
+  APOSTADORES
+  JUIZES
+}
+
+enum TipoEvidencia {
+  DOCUMENTO
+  IMAGEM
+  VIDEO
+  AUDIO
+  OUTRO
+}
+
+model Denuncia {
+  id                   String               @id @default(uuid()) @db.Uuid
+  tipoDenuncia         TipoDenuncia
+  torneio              String // Adicionar tabela de enums
+  data                 DateTime
+  descricao            String
+  comoSoube            ComoSoube?
+  pontualOuDisseminado PontualOuDisseminado @default(PONTUAL)
+  frequencia           Frequencia           @default(ISOLADO)
+
+  clubesEnvolvidos  Clube[]
+  pessoasEnvolvidas Pessoa[]
+  focosManipulacao  DenunciaFoco[]
+  evidencias        Evidencia[]
+
+  municipio   Municipio @relation(fields: [municipioId], references: [id])
+  municipioId String    @db.Uuid
+}
+
+model Municipio {
+  id       String     @id @default(uuid()) @db.Uuid
+  nome     String
+  uf       String
+  Denuncia Denuncia[]
+}
+
+model Pessoa {
+  id String @id @default(uuid()) @db.Uuid
+
+  nomePessoa String
+  funcaoPessoa String
+  // documentoPessoa String
+
+  Denuncia   Denuncia? @relation(fields: [denunciaId], references: [id])
+  denunciaId String?   @db.Uuid
+}
+
+model Clube {
+  id String @id @default(uuid()) @db.Uuid
+
+  nomeClube String
+
+  Denuncia   Denuncia? @relation(fields: [denunciaId], references: [id])
+  denunciaId String?   @db.Uuid
+}
+
+model DenunciaFoco {
+  id String @id @default(uuid()) @db.Uuid
+  
+  denuncia   Denuncia        @relation(fields: [denunciaId], references: [id], onDelete: Cascade)
+  denunciaId String          @db.Uuid
+  foco       FocoManipulacao
+
+  @@unique([denunciaId, foco])
+}
+
+model Evidencia {
+  id String @id @default(uuid()) @db.Uuid
+  
+  nomeOriginal    String
+  nomeArquivo     String        // Nome do arquivo no storage
+  caminhoArquivo  String        // Caminho completo do arquivo
+  tamanhoBytes    Int
+  mimeType        String
+  tipo            TipoEvidencia
+  descricao       String?       // Descrição opcional da evidência
+  dataUpload      DateTime      @default(now())
+  
+  denuncia   Denuncia @relation(fields: [denunciaId], references: [id], onDelete: Cascade)
+  denunciaId String   @db.Uuid
+}
+
 // model User {
 //   id        Int      @id @default(autoincrement())
 //   createdAt DateTime @default(now())
