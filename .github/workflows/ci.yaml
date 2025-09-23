@@ -1,14 +1,12 @@
-name: CI
+name: API - Denuncias - CI
 
 on:
-  push:
-    branches: [ "main", "dev" ]
   pull_request:
-    branches: [ "main", "dev" ]
+    branches: [ "main", "develop" ]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout repository
@@ -21,3 +19,37 @@ jobs:
       - name: Run PR-only step
         if: github.event_name == 'pull_request'
         run: echo "This runs only on pull request!"
+
+      - name: Configurar Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Construir a imagem Docker com cache
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          load: true
+          tags: plataforma-civica-backend:latest
+          cache-from: type=gha,scope=${{ github.workflow }}
+          cache-to: type=gha,scope=${{ github.workflow }},mode=max
+
+      - name: Verificar se o contêiner sobe e está saudável
+        run: |
+          docker run -d --name my-backend -p 3000:3000 plataforma-civica-backend:latest
+
+          echo "Aguardando 10 segundos para o contêiner inicializar..."
+          sleep 10
+
+          echo "Verificando o status do contêiner..."
+          STATUS=$(docker ps -f name=my-backend --format "{{.Status}}")
+
+          if echo "$STATUS" | grep -q "Up"; then
+            echo "Contêiner 'my-backend' subiu com sucesso! Status: $STATUS"
+          else
+            echo "ERRO: Contêiner 'my-backend' não subiu corretamente. Status: $STATUS"
+            docker logs my-backend
+            exit 1 # Falha o passo do workflow
+          fi
+
+          echo "Parando e removendo o contêiner..."
+          docker stop my-backend
+          docker rm my-backend
