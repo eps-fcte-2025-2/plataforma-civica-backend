@@ -36,6 +36,12 @@ app.register(exampleRoutes, {
     prefix: "/example"
 });
 
+// Rotas de Reports
+import { reportsRoutes } from "../../modules/reports/infra/routes/reportsRoutes";
+app.register(reportsRoutes, {
+    prefix: "/v1/reports"
+});
+
 
 // Error Handler
 app.setErrorHandler((error, _, reply) => {
