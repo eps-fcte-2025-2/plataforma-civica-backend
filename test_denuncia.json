@@ -1,0 +1,42 @@
+{
+  "tipoDenuncia": "ESQUEMA_DE_MANIPULACAO",
+  "descricao": "Denúncia de esquema de manipulação envolvendo apostas em jogos do campeonato brasileiro. Foram observadas movimentações suspeitas de apostas em partidas específicas, com padrões anômalos nas odds oferecidas pelas casas de apostas.",
+  "comoSoube": "INTERNET",
+  "pontualOuDisseminado": "DISSEMINADO",
+  "frequencia": "FREQUENTE",
+  "municipioId": "d0bcbd0f-3249-45bd-b2f8-04deb828fb2b",
+  "pessoasEnvolvidas": [
+    {
+      "nomePessoa": "João Silva Santos",
+      "funcaoPessoa": "Apostador Profissional"
+    },
+    {
+      "nomePessoa": "Maria Oliveira Costa",
+      "funcaoPessoa": "Intermediária de Apostas"
+    }
+  ],
+  "clubesEnvolvidos": [
+    {
+      "nomeClube": "Clube Atlético Mineiro"
+    },
+    {
+      "nomeClube": "Santos Futebol Clube"
+    }
+  ],
+  "focosManipulacao": [
+    "ATLETAS_DIRIGENTES_COMISSAO",
+    "APOSTADORES"
+  ],
+  "evidencias": [
+    {
+      "nomeOriginal": "conversa_whatsapp.jpg",
+      "nomeArquivo": "evidencia_001_2024.jpg",
+      "caminhoArquivo": "/uploads/evidencias/evidencia_001_2024.jpg",
+      "tamanhoBytes": 245760,
+      "mimeType": "image/jpeg",
+      "tipo": "IMAGEM",
+      "descricao": "Print de conversa no WhatsApp mostrando combinação de resultado"
+    }
+  ],
+  "partidas": []
+}
