@@ -28,7 +28,7 @@ export class UpdateReportStatusController implements Controller<
         await updateReportStatusUseCase.execute(id, data);
 
         response.status(200).send({
-            message: "Status da denúncia atualizado com sucesso"
+            message: "Denúncia atualizado com sucesso"
         });
     }
 }

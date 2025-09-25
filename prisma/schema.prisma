@@ -53,6 +53,14 @@ enum TipoEvidencia {
   OUTRO
 }
 
+enum ReportStatus {
+  PENDENTE
+  EM_ANALISE
+  APROVADA
+  REJEITADA
+  ARQUIVADA
+}
+
 model Denuncia {
   id                   String               @id @default(uuid()) @db.Uuid
   tipoDenuncia         TipoDenuncia
@@ -61,6 +69,8 @@ model Denuncia {
   pontualOuDisseminado PontualOuDisseminado @default(PONTUAL)
   frequencia           Frequencia           @default(ISOLADO)
   dataDenuncia         DateTime             @default(now())
+  status               ReportStatus         @default(PENDENTE)
+  observacoes          String?
 
   partidas          Partida[]
   clubesEnvolvidos  Clube[]

@@ -227,9 +227,6 @@ export class ReportsRepositoryImpl implements ReportsRepository {
     }
 
     async updateStatus(id: string, data: UpdateReportStatus): Promise<void> {
-        // Note: Como não temos campo de status no schema atual, 
-        // vamos adicionar este campo posteriormente ou usar outra estratégia
-        // Por ora, vamos apenas verificar se a denúncia existe
         const denuncia = await this.prisma.denuncia.findUnique({
             where: { id },
         });
@@ -238,8 +235,14 @@ export class ReportsRepositoryImpl implements ReportsRepository {
             throw new Error("Denúncia não encontrada");
         }
 
-        // TODO: Implementar quando campo de status for adicionado ao schema
-        console.log(`Status da denúncia ${id} seria atualizado para: ${data.status}`);
+        await this.prisma.denuncia.update({
+            where: { id },
+            data: {
+                status: data.status,
+                observacoes: data.observacoes
+            }
+        });
+
     }
 
     async exists(id: string): Promise<boolean> {
