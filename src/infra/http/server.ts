@@ -67,6 +67,6 @@ app.setErrorHandler((error, _, reply) => {
 });
 
 // Listen
-app.listen({ port: env.PORT }).then(() => {
-    console.log(`HTTP Server running at: http://localhost:${env.PORT}`);
+app.listen({ port: env.PORT, host: "0.0.0.0" }).then(() => {
+    console.log(`HTTP Server running at: http://0.0.0.0:${env.PORT}`);
 });
