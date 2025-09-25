@@ -47,4 +47,4 @@ EXPOSE 3333
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD nc -z localhost 3333 || exit 1
 
-CMD [ "./docker-entrypoint.sh" ]
+CMD [ "sh", "./docker-entrypoint.sh" ]

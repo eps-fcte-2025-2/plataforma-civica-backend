@@ -1,41 +1,41 @@
 #!/bin/sh
 
-echo "🚀 Iniciando aplicação Plataforma Cívica Backend..."
+echo "Iniciando aplicacao Plataforma Civica Backend..."
 
 # Aguardar o banco de dados estar disponível
-echo "⏳ Aguardando banco de dados PostgreSQL..."
+echo "Aguardando banco de dados PostgreSQL..."
 timeout=60
 counter=0
 
 until nc -z database 5555; do
   if [ $counter -ge $timeout ]; then
-    echo "❌ Timeout: Banco de dados não está disponível após ${timeout} segundos"
+    echo "ERRO: Timeout - Banco de dados nao esta disponivel apos ${timeout} segundos"
     exit 1
   fi
-  echo "🔄 Banco não está pronto, aguardando... (${counter}/${timeout}s)"
+  echo "Banco nao esta pronto, aguardando... (${counter}/${timeout}s)"
   sleep 2
   counter=$((counter + 2))
 done
 
-echo "✅ Banco de dados PostgreSQL disponível!"
+echo "Banco de dados PostgreSQL disponivel!"
 
 # Aplicar migrations do Prisma
-echo "📊 Aplicando migrations do Prisma..."
+echo "Aplicando migrations do Prisma..."
 npx prisma migrate deploy
 
-# Verificar se as migrations foram aplicadas com sucesso
+# Verificar se as migrations foram aplicadas
 if [ $? -eq 0 ]; then
-  echo "✅ Migrations aplicadas com sucesso!"
+  echo "Migrations aplicadas com sucesso!"
 else
-  echo "❌ Erro ao aplicar migrations do Prisma!"
+  echo "ERRO: Falha ao aplicar migrations!"
   exit 1
 fi
 
-# Opcional: Verificar se o banco está populado e executar seed se necessário
-echo "🌱 Verificando se precisa executar seed..."
-# Esta verificação pode ser customizada conforme necessário
+# Garantir que o cliente Prisma esteja atualizado
+echo "Gerando cliente Prisma..."
+npx prisma generate
 
 # Iniciar o servidor
-echo "🚀 Iniciando servidor Fastify na porta 3333..."
-echo "📚 Documentação disponível em: http://localhost:3333/docs"
+echo "Iniciando servidor Fastify na porta 3333..."
+echo "Documentacao disponivel em: http://localhost:3333/docs"
 exec pnpm dev

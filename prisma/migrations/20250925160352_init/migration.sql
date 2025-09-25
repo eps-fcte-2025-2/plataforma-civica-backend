@@ -25,18 +25,10 @@ CREATE TABLE "public"."Denuncia" (
     "pontualOuDisseminado" "public"."PontualOuDisseminado" NOT NULL DEFAULT 'PONTUAL',
     "frequencia" "public"."Frequencia" NOT NULL DEFAULT 'ISOLADO',
     "dataDenuncia" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "municipioId" UUID NOT NULL,
-
-    CONSTRAINT "Denuncia_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "public"."Municipio" (
-    "id" UUID NOT NULL,
-    "nome" TEXT NOT NULL,
+    "municipio" TEXT NOT NULL,
     "uf" TEXT NOT NULL,
 
-    CONSTRAINT "Municipio_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Denuncia_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -49,7 +41,8 @@ CREATE TABLE "public"."Partida" (
     "timeB" TEXT,
     "observacoes" TEXT,
     "denunciaId" UUID NOT NULL,
-    "municipioId" UUID NOT NULL,
+    "municipio" TEXT NOT NULL,
+    "uf" TEXT NOT NULL,
 
     CONSTRAINT "Partida_pkey" PRIMARY KEY ("id")
 );
@@ -102,13 +95,7 @@ CREATE TABLE "public"."Evidencia" (
 CREATE UNIQUE INDEX "DenunciaFoco_denunciaId_foco_key" ON "public"."DenunciaFoco"("denunciaId", "foco");
 
 -- AddForeignKey
-ALTER TABLE "public"."Denuncia" ADD CONSTRAINT "Denuncia_municipioId_fkey" FOREIGN KEY ("municipioId") REFERENCES "public"."Municipio"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "public"."Partida" ADD CONSTRAINT "Partida_denunciaId_fkey" FOREIGN KEY ("denunciaId") REFERENCES "public"."Denuncia"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "public"."Partida" ADD CONSTRAINT "Partida_municipioId_fkey" FOREIGN KEY ("municipioId") REFERENCES "public"."Municipio"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."Pessoa" ADD CONSTRAINT "Pessoa_denunciaId_fkey" FOREIGN KEY ("denunciaId") REFERENCES "public"."Denuncia"("id") ON DELETE SET NULL ON UPDATE CASCADE;
