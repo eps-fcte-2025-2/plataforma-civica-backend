@@ -67,16 +67,8 @@ model Denuncia {
   focosManipulacao  DenunciaFoco[]
   evidencias        Evidencia[]
 
-  municipio   Municipio @relation(fields: [municipioId], references: [id])
-  municipioId String    @db.Uuid
-}
-
-model Municipio {
-  id       String     @id @default(uuid()) @db.Uuid
-  nome     String
-  uf       String
-  Denuncia Denuncia[]
-  Partida  Partida[]
+  municipio String
+  uf        String
 }
 
 model Partida {
@@ -92,8 +84,8 @@ model Partida {
   denuncia   Denuncia  @relation(fields: [denunciaId], references: [id], onDelete: Cascade)
   denunciaId String    @db.Uuid
   
-  municipio   Municipio @relation(fields: [municipioId], references: [id])
-  municipioId String    @db.Uuid
+  municipio String
+  uf        String
 }
 
 model Pessoa {

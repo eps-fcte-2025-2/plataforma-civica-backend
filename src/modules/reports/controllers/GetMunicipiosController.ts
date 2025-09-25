@@ -2,6 +2,9 @@ import { DatabaseConnection } from "../../../infra/database/DatabaseConnection";
 import { Controller, TypedRequest, TypedResponse } from "../../../shared/patterns/Controller";
 import z from "zod";
 
+// DEPRECATED: Controller removido após mudança para campos de string
+// Agora os municípios são gerenciados via API externa (ex: IBGE)
+/*
 const MunicipioSchema = z.object({
     id: z.string().uuid(),
     nome: z.string(),
@@ -31,3 +34,4 @@ export class GetMunicipiosController implements Controller<
         response.status(200).send(municipios);
     }
 }
+*/

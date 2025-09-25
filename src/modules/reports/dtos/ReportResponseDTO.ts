@@ -29,7 +29,8 @@ export const PartidaResponseSchema = z.object({
     timeA: z.string().nullable(),
     timeB: z.string().nullable(),
     observacoes: z.string().nullable(),
-    municipio: MunicipioResponseSchema
+    municipio: z.string(),
+    uf: z.string()
 });
 
 // Schema para Foco de Manipulação na resposta
@@ -60,7 +61,8 @@ export const ReportResponseSchema = z.object({
     pontualOuDisseminado: z.enum(["PONTUAL", "DISSEMINADO"]),
     frequencia: z.enum(["ISOLADO", "FREQUENTE"]),
     dataDenuncia: z.string().datetime(),
-    municipio: MunicipioResponseSchema,
+    municipio: z.string(),
+    uf: z.string(),
     pessoasEnvolvidas: z.array(PessoaResponseSchema),
     clubesEnvolvidos: z.array(ClubeResponseSchema),
     focosManipulacao: z.array(DenunciaFocoResponseSchema),
@@ -76,7 +78,8 @@ export const ReportSummaryResponseSchema = z.object({
     pontualOuDisseminado: z.enum(["PONTUAL", "DISSEMINADO"]),
     frequencia: z.enum(["ISOLADO", "FREQUENTE"]),
     dataDenuncia: z.string().datetime(),
-    municipio: MunicipioResponseSchema,
+    municipio: z.string(),
+    uf: z.string(),
     totalPessoas: z.number(),
     totalClubes: z.number(),
     totalEvidencias: z.number()

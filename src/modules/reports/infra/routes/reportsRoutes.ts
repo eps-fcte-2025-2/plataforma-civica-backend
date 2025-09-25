@@ -9,7 +9,7 @@ import { CreateReportController } from "../../controllers/CreateReportController
 import { GetReportByIdController } from "../../controllers/GetReportByIdController";
 import { GetReportsController } from "../../controllers/GetReportsController";
 import { UpdateReportStatusController } from "../../controllers/UpdateReportStatusController";
-import { GetMunicipiosController } from "../../controllers/GetMunicipiosController";
+// import { GetMunicipiosController } from "../../controllers/GetMunicipiosController"; // DEPRECATED
 
 export async function reportsRoutes(app: FastifyTypedInstance) {
     // POST /v1/reports - Criar nova denúncia
@@ -78,6 +78,9 @@ export async function reportsRoutes(app: FastifyTypedInstance) {
         }
     }, new UpdateReportStatusController().handle);
 
+    // DEPRECATED: Endpoint removido após mudança para campos de string
+    // Agora os municípios devem ser obtidos via APIs externas (ex: IBGE)
+    /*
     // GET /v1/reports/municipios - Listar municípios (endpoint auxiliar)
     app.get("/municipios", {
         schema: {
@@ -96,4 +99,5 @@ export async function reportsRoutes(app: FastifyTypedInstance) {
             }
         }
     }, new GetMunicipiosController().handle);
+    */
 }
