@@ -11,7 +11,34 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Syntax check
+        run: |
+          find src -type f \(-name "*.js" \) \
+          | xargs -I {} node --check {}
+
+      - name: Validate Prisma schema
+        run: npx prisma validate
+        env:
+          DATABASE_URL: "postgresql://user:password@localhost:5432/dbname"
+
       - name: Run push-only step
         if: github.event_name == 'push'
         run: echo "This runs only on push!"
@@ -20,17 +47,17 @@ jobs:
         if: github.event_name == 'pull_request'
         run: echo "This runs only on pull request!"
 
-      - name: Configurar Docker Buildx
+      - name: Configurar Docker Buildx (local)
         uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker
 
-      - name: Construir a imagem Docker com cache
+      - name: Construir a imagem Docker
         uses: docker/build-push-action@v5
         with:
           context: .
           load: true
           tags: plataforma-civica-backend:latest
-          cache-from: type=gha,scope=${{ github.workflow }}
-          cache-to: type=gha,scope=${{ github.workflow }},mode=max
 
       - name: Verificar se o contêiner sobe e está saudável
         run: |
