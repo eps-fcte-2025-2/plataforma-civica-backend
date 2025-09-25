@@ -9,7 +9,7 @@ import { CreateReportController } from "../../controllers/CreateReportController
 import { GetReportByIdController } from "../../controllers/GetReportByIdController";
 import { GetReportsController } from "../../controllers/GetReportsController";
 import { UpdateReportStatusController } from "../../controllers/UpdateReportStatusController";
-// import { GetMunicipiosController } from "../../controllers/GetMunicipiosController"; // DEPRECATED
+import { GetReportsQuerySchemaDTO } from "../../dtos/GetReportsQuerySchemaDTO";
 
 export async function reportsRoutes(app: FastifyTypedInstance) {
     // POST /v1/reports - Criar nova denúncia
@@ -31,11 +31,11 @@ export async function reportsRoutes(app: FastifyTypedInstance) {
     app.get("/", {
         schema: {
             tags: ["Reports"],
-            summary: "Listar denúncias",
-            description: "Lista todas as denúncias com paginação. Endpoint protegido para backoffice.",
+            summary: "Listar denúncias com filtros", // (Opcional) Melhorar a descrição
+            description: "Lista denúncias com filtros avançados e paginação. Endpoint protegido para backoffice.", // (Opcional)
             body: null,
             params: null,
-            querystring: PaginateQuerySchema,
+            querystring: GetReportsQuerySchemaDTO,
             response: {
                 200: ReportsListResponseSchema
             }
