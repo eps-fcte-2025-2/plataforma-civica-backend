@@ -35,9 +35,4 @@ export interface ReportsRepository {
      * Busca clube por nome (para verificar se já existe)
      */
     findClubeByName(name: string): Promise<{ id: string; nomeClube: string } | null>;
-
-    /**
-     * Verifica se um município existe
-     */
-    municipioExists(municipioId: string): Promise<boolean>;
 }

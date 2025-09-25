@@ -22,7 +22,8 @@ export class ReportsRepositoryImpl implements ReportsRepository {
                     comoSoube: data.comoSoube,
                     pontualOuDisseminado: data.pontualOuDisseminado,
                     frequencia: data.frequencia,
-                    municipioId: data.municipioId,
+                    municipio: data.municipio,
+                    uf: data.uf,
                 },
             });
 
@@ -110,7 +111,8 @@ export class ReportsRepositoryImpl implements ReportsRepository {
                                 timeB: partida.timeB,
                                 observacoes: partida.observacoes,
                                 denunciaId: denuncia.id,
-                                municipioId: partida.municipioId,
+                                municipio: partida.municipio,
+                                uf: partida.uf,
                             },
                         })
                     )
@@ -125,16 +127,11 @@ export class ReportsRepositoryImpl implements ReportsRepository {
         const denuncia = await this.prisma.denuncia.findUnique({
             where: { id },
             include: {
-                municipio: true,
                 pessoasEnvolvidas: true,
                 clubesEnvolvidos: true,
                 focosManipulacao: true,
                 evidencias: true,
-                partidas: {
-                    include: {
-                        municipio: true,
-                    },
-                },
+                partidas: true,
             },
         });
 
@@ -150,11 +147,8 @@ export class ReportsRepositoryImpl implements ReportsRepository {
             pontualOuDisseminado: denuncia.pontualOuDisseminado,
             frequencia: denuncia.frequencia,
             dataDenuncia: denuncia.dataDenuncia.toISOString(),
-            municipio: {
-                id: denuncia.municipio.id,
-                nome: denuncia.municipio.nome,
-                uf: denuncia.municipio.uf,
-            },
+            municipio: denuncia.municipio,
+            uf: denuncia.uf,
             pessoasEnvolvidas: denuncia.pessoasEnvolvidas.map((pessoa) => ({
                 id: pessoa.id,
                 nomePessoa: pessoa.nomePessoa,
@@ -187,11 +181,8 @@ export class ReportsRepositoryImpl implements ReportsRepository {
                 timeA: partida.timeA,
                 timeB: partida.timeB,
                 observacoes: partida.observacoes,
-                municipio: {
-                    id: partida.municipio.id,
-                    nome: partida.municipio.nome,
-                    uf: partida.municipio.uf,
-                },
+                municipio: partida.municipio,
+                uf: partida.uf,
             })),
         };
     }
@@ -207,7 +198,6 @@ export class ReportsRepositoryImpl implements ReportsRepository {
                 skip,
                 take: pageSize,
                 include: {
-                    municipio: true,
                     pessoasEnvolvidas: true,
                     clubesEnvolvidos: true,
                     evidencias: true,
@@ -226,11 +216,8 @@ export class ReportsRepositoryImpl implements ReportsRepository {
             pontualOuDisseminado: denuncia.pontualOuDisseminado,
             frequencia: denuncia.frequencia,
             dataDenuncia: denuncia.dataDenuncia.toISOString(),
-            municipio: {
-                id: denuncia.municipio.id,
-                nome: denuncia.municipio.nome,
-                uf: denuncia.municipio.uf,
-            },
+            municipio: denuncia.municipio,
+            uf: denuncia.uf,
             totalPessoas: denuncia.pessoasEnvolvidas.length,
             totalClubes: denuncia.clubesEnvolvidos.length,
             totalEvidencias: denuncia.evidencias.length,
@@ -271,13 +258,5 @@ export class ReportsRepositoryImpl implements ReportsRepository {
         });
 
         return clube ? { id: clube.id, nomeClube: clube.nomeClube } : null;
-    }
-
-    async municipioExists(municipioId: string): Promise<boolean> {
-        const municipio = await this.prisma.municipio.findUnique({
-            where: { id: municipioId },
-        });
-
-        return !!municipio;
     }
 }

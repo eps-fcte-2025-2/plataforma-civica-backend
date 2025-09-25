@@ -27,7 +27,8 @@ export const PartidaSchema = z.object({
     timeA: z.string().max(255).optional(),
     timeB: z.string().max(255).optional(),
     observacoes: z.string().max(1000).optional(),
-    municipioId: z.string().uuid("ID do município deve ser um UUID válido")
+    municipio: z.string().min(1, "Nome do município é obrigatório").max(255),
+    uf: z.string().length(2, "UF deve ter exatamente 2 caracteres").regex(/^[A-Z]{2}$/, "UF deve conter apenas letras maiúsculas")
 });
 
 // DTO para Evidência
@@ -48,7 +49,8 @@ export const CreateReportSchema = z.object({
     comoSoube: ComoSoubeEnum.optional(),
     pontualOuDisseminado: PontualOuDisseminadoEnum.default("PONTUAL"),
     frequencia: FrequenciaEnum.default("ISOLADO"),
-    municipioId: z.string().uuid("ID do município deve ser um UUID válido"),
+    municipio: z.string().min(1, "Nome do município é obrigatório").max(255),
+    uf: z.string().length(2, "UF deve ter exatamente 2 caracteres").regex(/^[A-Z]{2}$/, "UF deve conter apenas letras maiúsculas"),
     
     // Relacionamentos
     pessoasEnvolvidas: z.array(PessoaEnvolvidaSchema).min(1, "Pelo menos uma pessoa deve estar envolvida"),
