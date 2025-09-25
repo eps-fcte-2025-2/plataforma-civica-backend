@@ -1,6 +1,7 @@
 import { CreateReport } from "../dtos/CreateReportDTO";
 import { UpdateReportStatus } from "../dtos/UpdateReportStatusDTO";
 import { ReportResponse, ReportSummaryResponse } from "../dtos/ReportResponseDTO";
+import { FindManyReportsOptionsDTO } from "../dtos/FindManyReportsOptionsDTO";
 
 export interface ReportsRepository {
     /**
@@ -16,10 +17,11 @@ export interface ReportsRepository {
     /**
      * Lista denúncias com paginação (versão resumida)
      */
-    findMany(page: number, pageSize: number): Promise<{
+    findMany(options: FindManyReportsOptionsDTO): Promise<{
         reports: ReportSummaryResponse[];
         total: number;
     }>;
+
 
     /**
      * Atualiza o status de uma denúncia

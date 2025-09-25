@@ -1,22 +1,23 @@
 import { ReportsListResponse } from "../dtos/ReportResponseDTO";
-import { ReportsRepository } from "../repositories/ReportsRepository";
+import { FindManyReportsOptionsDTO, ReportsRepository } from "../repositories/ReportsRepository";
 
-interface GetReportsRequest {
-    page: number;
-    pageSize: number;
-}
+type GetReportsRequest = FindManyReportsOptionsDTO;
 
 export class GetReportsUseCase {
     constructor(private reportsRepository: ReportsRepository) {}
 
     async execute(request: GetReportsRequest): Promise<ReportsListResponse> {
-        const { page, pageSize } = request;
+        const { page, pageSize, filters } = request;
 
         // Validar parâmetros de paginação
-        const validatedPage = Math.max(1, page);
-        const validatedPageSize = Math.min(Math.max(1, pageSize), 100); // Máximo de 100 itens por página
+        const validatedPage = Math.max(1, page || 1);
+        const validatedPageSize = Math.min(Math.max(1, pageSize || 10), 100); // Default 10, Máximo 100
 
-        const { reports, total } = await this.reportsRepository.findMany(validatedPage, validatedPageSize);
+        const { reports, total } = await this.reportsRepository.findMany({
+            page: validatedPage,
+            pageSize: validatedPageSize,
+            filters: filters || {} // Passa os filtros para o repositório
+        });
 
         const totalPages = Math.ceil(total / validatedPageSize);
 
