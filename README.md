@@ -118,14 +118,12 @@ curl http://localhost:3333/admin/health \
   -H "Authorization: Bearer SEU_TOKEN_AQUI"
 ```
 
-## O que ainda falta
+# Implementado pósteriormente
 
 - Integrar Prisma nas rotas:
 	- Persistir usuário no POST /users (hash de senha).
 
 	- Validar credenciais no POST /sessions.
-
-
 - Ajustar o modelo User (passwordHash, campos de auditoria).
 
 - Adicionar schemas das rotas no Swagger (schema.body/response) para exibir nos docs.
@@ -133,3 +131,43 @@ curl http://localhost:3333/admin/health \
 - Seed de um admin inicial (opcional).
 
 - Garantir que tsconfig inclui os .d.ts (include: ["/*.ts", "/*.d.ts"]). 
+
+## Como testar o que foi implementado posteriormente
+
+- Prisma integrado nas rotas
+  
+    ```bash
+    curl -X POST http://localhost:${PORT:-3333}/auth/register \
+      -H "Content-Type: application/json" \
+      -d '{"name":"Admin","email":"admin@example.com","password":"StrongPass123!"}'
+    ```
+  
+  - Login (valida credenciais com hash e retorna JWT + dados do usuário):
+    ```bash
+    curl -X POST http://localhost:${PORT:-3333}/auth/login \
+      -H "Content-Type: application/json" \
+      -d '{"email":"admin@example.com","password":"StrongPass123!"}'
+    ```
+
+    ```bash
+    pnpm prisma studio
+    ```
+    Abra a tabela `User` e confirme o novo registro. O campo `passwordHash` deve conter um hash (não a senha em texto puro). Campos `createdAt` e `updatedAt` devem estar preenchidos automaticamente.
+
+
+  - Após criar um usuário, confira no Prisma Studio que:
+    - `passwordHash` está preenchido (hash Bcrypt).
+    - `createdAt` e `updatedAt` possuem valores consistentes.
+  - Teste login com senha incorreta para validar a proteção:
+    ```bash
+    curl -X POST http://localhost:${PORT:-3333}/auth/login \
+      -H "Content-Type: application/json" \
+      -d '{"email":"admin@example.com","password":"SenhaErrada123!"}'
+    ```
+    Esperado: erro 401 (credenciais inválidas).
+
+- Schemas no Swagger (body/response)
+  - Acesse a documentação: http://localhost:${PORT:-3333}/docs
+  - Verifique que as rotas de `Usuários` exibem os esquemas de request/response (por exemplo, `POST /auth/register` e `POST /auth/login`).
+
+-
