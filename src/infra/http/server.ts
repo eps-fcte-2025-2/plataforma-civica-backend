@@ -8,7 +8,7 @@ import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { env } from "../../config/envConfig";
 import { HttpError } from "../../shared/errors/interface/HttpError";
 import fastifyJwt from "@fastify/jwt";
-import { usersRoutes } from "../../modules/users/infra/routes/usersRoutes";
+import { userRoutes } from "../../modules/user/infra/routes/userRoutes";
 
 const app = fastify().withTypeProvider<ZodTypeProvider>();
 app.setValidatorCompiler(validatorCompiler);
@@ -39,7 +39,7 @@ app.register(fastifySwaggerUi, {
 app.register(exampleRoutes, {
     prefix: "/example"
 });
-app.register(usersRoutes); // expõe /users, /sessions, /me, /admin/health
+app.register(userRoutes); // expõe /users, /sessions, /me, /admin/health
 
 
 // Error Handler
@@ -66,6 +66,6 @@ app.setErrorHandler((error, _, reply) => {
 });
 
 // Listen
-app.listen({ port: env.PORT }).then(() => {
+app.listen({ port: env.PORT, host: '0.0.0.0' }).then(() => {
     console.log(`HTTP Server running at: http://localhost:${env.PORT}`);
 });

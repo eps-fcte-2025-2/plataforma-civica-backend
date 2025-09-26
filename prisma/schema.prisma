@@ -143,9 +143,18 @@ model Evidencia {
 }
 
 
+enum UserRole {
+  ADMIN
+  MODERATOR
+  SUPER_ADMIN
+}
+
 model User {
   id           String   @id @default(cuid())
   name         String
   email        String   @unique
-  password     String
+  passwordHash String
+  role         UserRole @default(ADMIN)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }

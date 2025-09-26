@@ -15,7 +15,8 @@ const envSchema = z.object({
     POSTGRES_DB: z.string(),
     POSTGRES_HOST: z.string(),
     POSTGRES_PORT: z.string().regex(/^\d+$/).transform(Number),
-    DATABASE_URL: z.string()
+    DATABASE_URL: z.string(),
+    JWT_SECRET: z.string().min(32),
 });
 
 const colorCode = {

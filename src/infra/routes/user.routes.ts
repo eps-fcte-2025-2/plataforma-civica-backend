@@ -3,7 +3,7 @@ import { z } from 'zod';
 import {
   requireAdmin,
   verifyJWT,
-} from '../../../../shared/middlewares/auth';
+} from '../../shared/middlewares/auth';
 
 export async function usersRoutes(app: FastifyInstance) {
   const createUserBodySchema = z.object({
