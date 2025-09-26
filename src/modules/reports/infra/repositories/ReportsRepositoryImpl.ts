@@ -1,11 +1,10 @@
-import { PrismaClient } from "../../../../../generated/prisma";
+import { Prisma, PrismaClient } from "../../../../../generated/prisma";
 import { DatabaseConnection } from "../../../../infra/database/DatabaseConnection";
 import { CreateReport } from "../../dtos/CreateReportDTO";
 import { UpdateReportStatus } from "../../dtos/UpdateReportStatusDTO";
 import { ReportResponse, ReportSummaryResponse } from "../../dtos/ReportResponseDTO";
 import { ReportsRepository } from "../../repositories/ReportsRepository";
 import { FindManyReportsOptionsDTO } from "../../dtos/FindManyReportsOptionsDTO";
-
 export class ReportsRepositoryImpl implements ReportsRepository {
     private prisma: PrismaClient;
 
@@ -195,7 +194,7 @@ export class ReportsRepositoryImpl implements ReportsRepository {
         const { page, pageSize, filters } = options;
         const skip = (page - 1) * pageSize;
 
-        // 1. Construir o objeto 'where' dinamicamente
+        // Agora o TypeScript sabe o que é "Prisma" por causa do import
         const where: Prisma.DenunciaWhereInput = {};
 
         if (filters.uf) {

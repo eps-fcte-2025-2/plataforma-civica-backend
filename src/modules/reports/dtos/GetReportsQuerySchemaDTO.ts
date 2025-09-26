@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Frequencia, PontualOuDisseminado, TipoDenuncia } from '../../../../../generated/prisma';
+import { Frequencia, PontualOuDisseminado, TipoDenuncia } from '../../../../generated/prisma';
 
 // Schema de validação usando Zod
 export const GetReportsQuerySchemaDTO = z.object({

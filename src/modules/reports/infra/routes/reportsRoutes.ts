@@ -1,6 +1,5 @@
 import { FastifyInstance } from "fastify";
 import z from "zod";
-import { PaginateQuerySchema } from "../../../../shared/dtos/PaginationSchema";
 import { FastifyTypedInstance } from "../../../../shared/types/types";
 import { CreateReportSchema } from "../../dtos/CreateReportDTO";
 import { CreateReportResponseSchema, ReportResponseSchema, ReportsListResponseSchema } from "../../dtos/ReportResponseDTO";
@@ -19,28 +18,32 @@ export async function reportsRoutes(app: FastifyTypedInstance) {
             summary: "Criar nova denúncia",
             description: "Cria uma nova denúncia completa com todas as entidades relacionadas (pessoas, clubes, evidências, focos de manipulação).",
             body: CreateReportSchema,
-            params: null,
-            querystring: null,
+            params: null, // <-- ADICIONADO
+            querystring: null, // <-- ADICIONADO
             response: {
                 200: CreateReportResponseSchema
             }
         }
-    }, new CreateReportController().handle);
+    }, (request, reply) => {
+        new CreateReportController().handle(request, reply);
+    });
 
     // GET /v1/reports - Listar denúncias
     app.get("/", {
         schema: {
             tags: ["Reports"],
-            summary: "Listar denúncias com filtros", // (Opcional) Melhorar a descrição
-            description: "Lista denúncias com filtros avançados e paginação. Endpoint protegido para backoffice.", // (Opcional)
-            body: null,
-            params: null,
+            summary: "Listar denúncias com filtros",
+            description: "Lista denúncias com filtros avançados e paginação. Endpoint protegido para backoffice.",
+            body: null, // <-- ADICIONADO
+            params: null, // <-- ADICIONADO
             querystring: GetReportsQuerySchemaDTO,
             response: {
                 200: ReportsListResponseSchema
             }
         }
-    }, new GetReportsController().handle);
+    }, (request, reply) => {
+        new GetReportsController().handle(request, reply);
+    });
 
     // GET /v1/reports/:id - Visualizar denúncia completa
     app.get("/:id", {
@@ -48,16 +51,18 @@ export async function reportsRoutes(app: FastifyTypedInstance) {
             tags: ["Reports"],
             summary: "Visualizar denúncia completa",
             description: "Obtém todos os detalhes de uma denúncia específica, incluindo entidades relacionadas. Endpoint protegido.",
-            body: null,
+            body: null, // <-- ADICIONADO
             params: z.object({
                 id: z.string().uuid("ID deve ser um UUID válido")
             }),
-            querystring: null,
+            querystring: null, // <-- ADICIONADO
             response: {
                 200: ReportResponseSchema
             }
         }
-    }, new GetReportByIdController().handle);
+    }, (request, reply) => {
+        new GetReportByIdController().handle(request, reply);
+    });
 
     // PATCH /v1/reports/:id - Atualizar status da denúncia
     app.patch("/:id", {
@@ -69,35 +74,14 @@ export async function reportsRoutes(app: FastifyTypedInstance) {
             params: z.object({
                 id: z.string().uuid("ID deve ser um UUID válido")
             }),
-            querystring: null,
+            querystring: null, // <-- ADICIONADO
             response: {
                 200: z.object({
                     message: z.string()
                 })
             }
         }
-    }, new UpdateReportStatusController().handle);
-
-    // DEPRECATED: Endpoint removido após mudança para campos de string
-    // Agora os municípios devem ser obtidos via APIs externas (ex: IBGE)
-    /*
-    // GET /v1/reports/municipios - Listar municípios (endpoint auxiliar)
-    app.get("/municipios", {
-        schema: {
-            tags: ["Reports"],
-            summary: "Listar municípios",
-            description: "Lista todos os municípios disponíveis para usar nas denúncias.",
-            body: null,
-            params: null,
-            querystring: null,
-            response: {
-                200: z.array(z.object({
-                    id: z.string().uuid(),
-                    nome: z.string(),
-                    uf: z.string()
-                }))
-            }
-        }
-    }, new GetMunicipiosController().handle);
-    */
+    }, (request, reply) => {
+        new UpdateReportStatusController().handle(request, reply);
+    });
 }

@@ -1,16 +1,16 @@
 import { Controller, TypedRequest, TypedResponse } from "../../../shared/patterns/Controller";
 import { ReportsListResponseSchemaType } from "../dtos/ReportResponseDTO";
-import { GetReportsQuerySchemaType } from "../dtos/GetReportsQuerySchemaDTO"; // <-- Importe o novo tipo
+import { GetReportsQuerySchemaDTO, GetReportsQuerySchemaType } from "../dtos/GetReportsQuerySchemaDTO"; // <-- Importe o novo tipo
 import { buildGetReportsUseCase } from "../factories/ReportsUseCaseFactory";
 
 export class GetReportsController implements Controller<
     any,
     any,
-    GetReportsQuerySchemaType,
+    typeof GetReportsQuerySchemaDTO,
     { 200: ReportsListResponseSchemaType }
 > {
     async handle(
-        request: TypedRequest<any, any, GetReportsQuerySchemaType>,
+        request: TypedRequest<any, any, typeof GetReportsQuerySchemaDTO>, 
         response: TypedResponse<{ 200: ReportsListResponseSchemaType }>
     ): Promise<void> {
         // 1. Extraia a paginação e os filtros da query
