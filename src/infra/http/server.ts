@@ -4,7 +4,6 @@ import { validatorCompiler, serializerCompiler, jsonSchemaTransform } from "fast
 import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
 import { exampleRoutes } from "../../modules/example/infra/routes/exampleRoutes";
-import { denunciasRoutes } from "../../modules/denuncias/infra/routes/reportsRoutes";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { env } from "../../config/envConfig";
 import { HttpError } from "../../shared/errors/interface/HttpError";
