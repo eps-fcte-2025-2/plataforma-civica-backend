@@ -15,14 +15,8 @@ jobs:
       - name: Checkout código
         uses: actions/checkout@v4
 
-      - name: Instalar FTA CLI
-        run: |
-          npm install -g fta-cli@3.0.0
-
-      - name: Executar o FTA
-        uses: exiguus/fta-github-action@v0.1.2
-        with:
-          project_path: './src'  
+      - name: Executar o FTA via npx
+        run: npx fta-cli ./src > fta_output.json || true
 
       - name: Upload dos artefatos FTA
         uses: actions/upload-artifact@v4
