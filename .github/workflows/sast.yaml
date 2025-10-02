@@ -1,0 +1,33 @@
+name: Análise de segurança
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  nodejsscan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Configurar o Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Instalar nodejsscan
+        run: pip install --upgrade njsscan
+
+      - name: Rodar nodejsscan
+        run: njsscan . > nodejsscan_results.txt || true
+
+      - name: Upload dos artifatos
+        uses: actions/upload-artifact@v4
+        with:
+          name: nodejsscan_results
+          path: nodejsscan_results.txt
