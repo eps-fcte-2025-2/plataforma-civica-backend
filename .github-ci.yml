@@ -1,0 +1,16 @@
+stages:
+    - sast
+    - report
+    
+nodejsscan:
+    image: python
+    before_script:
+        - pip3 install --upgrade njsscan
+    script:
+        - njsscan .
+    allow_failure: true
+    artifacts:
+      paths:
+        - nodejsscan_results.txt
+    when: always
+  
