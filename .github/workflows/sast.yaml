@@ -31,3 +31,24 @@ jobs:
         with:
           name: nodejsscan_results
           path: nodejsscan_results.txt
+
+  trivy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Instalar Trivy
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          scan-type: 'fs'
+          scanners: 'misconfig,secret,vuln'
+          exit-code: '0'
+          format: 'table'
+          output: 'trivy_results.txt'
+
+      - name: Upload dos artifatos
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy_results
+          path: trivy_results.txt
