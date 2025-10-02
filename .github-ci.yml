@@ -4,6 +4,7 @@ stages:
     
 nodejsscan:
     image: python
+    stage: sast
     before_script:
         - pip3 install --upgrade njsscan
     script:
