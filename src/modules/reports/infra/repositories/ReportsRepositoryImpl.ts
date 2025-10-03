@@ -1,10 +1,10 @@
-import { PrismaClient } from "../../../../../generated/prisma";
+import { Prisma, PrismaClient } from "../../../../../generated/prisma";
 import { DatabaseConnection } from "../../../../infra/database/DatabaseConnection";
 import { CreateReport } from "../../dtos/CreateReportDTO";
 import { UpdateReportStatus } from "../../dtos/UpdateReportStatusDTO";
 import { ReportResponse, ReportSummaryResponse } from "../../dtos/ReportResponseDTO";
 import { ReportsRepository } from "../../repositories/ReportsRepository";
-
+import { FindManyReportsOptionsDTO } from "../../dtos/FindManyReportsOptionsDTO";
 export class ReportsRepositoryImpl implements ReportsRepository {
     private prisma: PrismaClient;
 
@@ -187,14 +187,61 @@ export class ReportsRepositoryImpl implements ReportsRepository {
         };
     }
 
-    async findMany(page: number, pageSize: number): Promise<{
+    async findMany(options: FindManyReportsOptionsDTO): Promise<{
         reports: ReportSummaryResponse[];
         total: number;
     }> {
+        const { page, pageSize, filters } = options;
         const skip = (page - 1) * pageSize;
 
+        // Agora o TypeScript sabe o que é "Prisma" por causa do import
+        const where: Prisma.DenunciaWhereInput = {};
+
+        if (filters.uf) {
+            where.uf = { equals: filters.uf, mode: 'insensitive' };
+        }
+        if (filters.municipio) {
+            where.municipio = { equals: filters.municipio, mode: 'insensitive' };
+        }
+        if (filters.tipoDenuncia) {
+            where.tipoDenuncia = filters.tipoDenuncia;
+        }
+        if (filters.frequencia) {
+            where.frequencia = filters.frequencia;
+        }
+        if (filters.pontualOuDisseminado) {
+            where.pontualOuDisseminado = filters.pontualOuDisseminado;
+        }
+
+        // Filtro por intervalo de datas
+        if (filters.dataInicio || filters.dataFim) {
+            where.dataDenuncia = {};
+            if (filters.dataInicio) {
+                where.dataDenuncia.gte = new Date(filters.dataInicio); // gte: greater than or equal
+            }
+            if (filters.dataFim) {
+                // Adiciona 1 dia para incluir o dia final por completo
+                const dataFim = new Date(filters.dataFim);
+                dataFim.setDate(dataFim.getDate() + 1);
+                where.dataDenuncia.lt = dataFim; // lt: less than
+            }
+        }
+        
+        // Filtro de busca por termo em múltiplos campos
+        if (filters.termoBusca) {
+            where.OR = [
+                { descricao: { contains: filters.termoBusca, mode: 'insensitive' } },
+                { pessoasEnvolvidas: { some: { nomePessoa: { contains: filters.termoBusca, mode: 'insensitive' } } } },
+                { clubesEnvolvidos: { some: { nomeClube: { contains: filters.termoBusca, mode: 'insensitive' } } } },
+                { partidas: { some: { timeA: { contains: filters.termoBusca, mode: 'insensitive' } } } },
+                { partidas: { some: { timeB: { contains: filters.termoBusca, mode: 'insensitive' } } } },
+            ];
+        }
+
+        // 2. Executar as queries com o 'where' construído
         const [denuncias, total] = await Promise.all([
             this.prisma.denuncia.findMany({
+                where, // Aplica os filtros aqui
                 skip,
                 take: pageSize,
                 include: {
@@ -206,7 +253,7 @@ export class ReportsRepositoryImpl implements ReportsRepository {
                     dataDenuncia: "desc",
                 },
             }),
-            this.prisma.denuncia.count(),
+            this.prisma.denuncia.count({ where }),
         ]);
 
         const reports = denuncias.map((denuncia) => ({
