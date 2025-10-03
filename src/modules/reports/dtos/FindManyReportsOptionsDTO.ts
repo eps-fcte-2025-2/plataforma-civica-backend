@@ -1,4 +1,4 @@
-import { Frequencia, PontualOuDisseminado, TipoDenuncia } from "../../../../../generated/prisma"; // Importe os enums
+import { Frequencia, PontualOuDisseminado, TipoDenuncia } from "../../../../generated/prisma"; // Importe os enums
 
 export interface FindManyReportsOptionsDTO {
     page: number;
