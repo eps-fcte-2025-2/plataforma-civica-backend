@@ -1,0 +1,25 @@
+name: CI de Qualidade código
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  fta:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Executar o FTA via npx
+        run: npx fta-cli ./src > fta_output.txt || true
+
+      - name: Upload dos artefatos FTA
+        uses: actions/upload-artifact@v4
+        with:
+          name: fta_results
+          path: fta_output.txt
