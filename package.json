@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev src/infra/http/server.ts"
+    "dev": "ts-node-dev src/infra/http/server.ts",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
