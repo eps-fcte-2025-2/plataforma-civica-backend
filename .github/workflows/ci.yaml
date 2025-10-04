@@ -1,8 +1,10 @@
 name: API - Denuncias - CI
 
 on:
+  push:
+    branches: [ "main", "teste-registry" ]
   pull_request:
-    branches: [ "main", "develop" ]
+    branches: [ "main", "teste-registry" ]
 
 jobs:
   build:
@@ -74,9 +76,34 @@ jobs:
           else
             echo "ERRO: Contêiner 'my-backend' não subiu corretamente. Status: $STATUS"
             docker logs my-backend
-            exit 1 # Falha o passo do workflow
+            exit 1
           fi
+          docker stop my-backend && docker rm my-backend
 
-          echo "Parando e removendo o contêiner..."
-          docker stop my-backend
-          docker rm my-backend
+  publish:
+    runs-on: ubuntu-22.04
+    needs: build
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/teste-registry'
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Login no GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build e Push da imagem para GHCR
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+            ghcr.io/${{ github.repository }}:${{ github.sha }}
