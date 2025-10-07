@@ -5,7 +5,7 @@ interface AuthenticatedRequest extends FastifyRequest {
   user: {
     sub: string;
     email: string;
-    role: string;
+    role: 'ADMIN' | 'MODERATOR' | 'SUPER_ADMIN';
   };
 }
 

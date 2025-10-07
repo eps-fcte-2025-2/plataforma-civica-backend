@@ -20,8 +20,8 @@ export class AuthenticationMiddleware {
 
 export class AuthorizationMiddleware {
   requireRole(allowedRoles: string[]) {
-    return async (request: AuthenticatedRequest, reply: FastifyReply) => {
-      const userRole = request.user?.role;
+    return async (request: FastifyRequest, reply: FastifyReply) => {
+      const userRole = (request as any).user?.role;
       
       if (!userRole || !allowedRoles.includes(userRole)) {
         return reply.status(403).send({ 

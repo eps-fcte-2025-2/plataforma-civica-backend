@@ -5,12 +5,12 @@ declare module '@fastify/jwt' {
     payload: {
       sub: string;
       email: string;
-      isAdmin: boolean;
+      role: 'ADMIN' | 'MODERATOR' | 'SUPER_ADMIN';
     };
     user: {
-      id: string;
+      sub: string;
       email: string;
-      isAdmin: boolean;
+      role: 'ADMIN' | 'MODERATOR' | 'SUPER_ADMIN';
     };
   }
 }

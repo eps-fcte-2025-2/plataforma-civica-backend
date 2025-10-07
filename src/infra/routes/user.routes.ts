@@ -26,7 +26,7 @@ export async function usersRoutes(app: FastifyInstance) {
       id: `TEMP-${now.getTime()}`,
       name: body.name,
       email: body.email,
-      isAdmin: true,
+      role: 'ADMIN' as const,
       createdAt: now,
     });
   });
@@ -37,10 +37,11 @@ export async function usersRoutes(app: FastifyInstance) {
 
     const sub = `dev-${Date.now()}`;
 
-    const token = await reply.jwtSign(
-      { email: body.email, isAdmin: true },
-      { sign: { sub } }
-    );
+    const token = await reply.jwtSign({
+      sub,
+      email: body.email,
+      role: 'ADMIN' as const
+    });
 
     return reply.send({ token });
   });

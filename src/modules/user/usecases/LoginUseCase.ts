@@ -24,18 +24,11 @@ export class LoginUseCase {
     }
 
     // Gerar token
-    const token = await this.jwtSign(
-      { 
-        email: user.email, 
-        role: user.role 
-      },
-      { 
-        sign: { 
-          sub: user.id,
-          expiresIn: '7d'
-        } 
-      }
-    );
+    const token = await this.jwtSign({
+      sub: user.id,
+      email: user.email,
+      role: user.role
+    });
 
     return {
       token,
