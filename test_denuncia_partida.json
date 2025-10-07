@@ -1,0 +1,61 @@
+{
+  "tipoDenuncia": "PARTIDA_ESPECIFICA",
+  "descricao": "Denúncia sobre manipulação de resultado em partida específica entre Flamengo e Palmeiras, onde houve comportamento suspeito de jogadores e árbitro.",
+  "comoSoube": "PRESENCIAL",
+  "pontualOuDisseminado": "PONTUAL",
+  "frequencia": "ISOLADO",
+  "municipioId": "cfd42f04-1054-4b7e-b845-8e78e49d1c12",
+  "pessoasEnvolvidas": [
+    {
+      "nomePessoa": "Carlos Eduardo Pereira",
+      "funcaoPessoa": "Árbitro Principal"
+    },
+    {
+      "nomePessoa": "Roberto Firmino Silva",
+      "funcaoPessoa": "Jogador"
+    }
+  ],
+  "clubesEnvolvidos": [
+    {
+      "nomeClube": "Clube de Regatas do Flamengo"
+    },
+    {
+      "nomeClube": "Sociedade Esportiva Palmeiras"
+    }
+  ],
+  "focosManipulacao": [
+    "JUIZES",
+    "ATLETAS_DIRIGENTES_COMISSAO"
+  ],
+  "evidencias": [
+    {
+      "nomeOriginal": "video_lance_suspeito.mp4",
+      "nomeArquivo": "evidencia_002_2024.mp4",
+      "caminhoArquivo": "/uploads/evidencias/evidencia_002_2024.mp4",
+      "tamanhoBytes": 15728640,
+      "mimeType": "video/mp4",
+      "tipo": "VIDEO",
+      "descricao": "Vídeo mostrando lance suspeito aos 89 minutos"
+    },
+    {
+      "nomeOriginal": "audio_conversa.mp3",
+      "nomeArquivo": "evidencia_003_2024.mp3", 
+      "caminhoArquivo": "/uploads/evidencias/evidencia_003_2024.mp3",
+      "tamanhoBytes": 2457600,
+      "mimeType": "audio/mpeg",
+      "tipo": "AUDIO",
+      "descricao": "Áudio de conversa suspeita entre árbitro e quarto árbitro"
+    }
+  ],
+  "partidas": [
+    {
+      "torneio": "Campeonato Brasileiro Série A 2024",
+      "dataPartida": "2024-08-15T20:00:00.000Z",
+      "localPartida": "Estádio do Maracanã",
+      "timeA": "Clube de Regatas do Flamengo",
+      "timeB": "Sociedade Esportiva Palmeiras",
+      "observacoes": "Partida da 23ª rodada com comportamento suspeito do árbitro",
+      "municipioId": "cfd42f04-1054-4b7e-b845-8e78e49d1c12"
+    }
+  ]
+}

@@ -21,7 +21,7 @@ importers:
         specifier: ^5.2.3
         version: 5.2.3
       '@prisma/client':
-        specifier: ^6.16.2
+        specifier: 6.16.2
         version: 6.16.2(prisma@6.16.2(typescript@5.9.2))(typescript@5.9.2)
       '@types/bcryptjs':
         specifier: ^3.0.0
@@ -49,7 +49,7 @@ importers:
         specifier: ^24.5.1
         version: 24.5.1
       prisma:
-        specifier: ^6.16.2
+        specifier: 6.16.2
         version: 6.16.2(typescript@5.9.2)
       ts-node-dev:
         specifier: ^2.0.0
