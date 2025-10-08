@@ -56,7 +56,16 @@ Siga o padrão:
 
 ## Pull requests
 
-### Estrutura de ull requests para código
+### Abrir pull requests
+
+Não se deve fazer commit direto na main. Para isso, abra um PR (pull request):
+
+- Abrir PR sempre para a branch principal de desenvolvimento.
+- Exigir pelo menos 1 revisor para aprovação.
+- O revisor deve baixar a branch e testar a funcionalidade localmente.
+- Ao aceitar um pull request, atualizar o status da issue no projeto para Done.
+
+### Estrutura de pull requests para código
 
 - **Título**: Use o mesmo padrão dos commits.
 - **Descrição**:
