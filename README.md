@@ -170,14 +170,16 @@ Use a documentação Swagger em `/docs` ou ferramentas como:
 
 ## 🤝 Como Contribuir
 
-1. **Fork** o repositório
-2. **Clone** sua fork localmente
-3. **Crie** uma branch para sua feature: `git checkout -b feature/nova-funcionalidade`
-4. **Implemente** suas alterações seguindo a arquitetura existente
-5. **Teste** localmente com os dados de exemplo
-6. **Commit** suas mudanças: `git commit -m 'feat: adiciona nova funcionalidade'`
-7. **Push** para sua branch: `git push origin feature/nova-funcionalidade`
-8. **Abra** um Pull Request
+Para contribuir, acesse o [Guia de Contribuição](./CONTRIBUTING.md)
+
+Basicamente:
+1. **Clone** o repositório.
+2. **Crie** uma branch para trabalhar conforme o guia de contribuição, exemplo: `git checkout -b <tipo>/<numero-da-issue>-<nome-da-funcionalidade>`.
+3. **Implemente** suas alterações seguindo a arquitetura existente.
+4. **Teste** localmente com os dados de exemplo.
+5. **Commit** suas mudanças conforme o guia de contribuição, exemplo: `git commit -m 'feat(#<numero-da-issue>): adiciona tal coisa'`.
+7. **Push** para sua branch.
+8. **Abra** um pull request.
 
 ### Padrões do Projeto
 - **Clean Architecture** para organização de código
