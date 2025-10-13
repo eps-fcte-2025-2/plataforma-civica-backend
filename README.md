@@ -89,6 +89,9 @@ pnpm install
 # 3. Configurar variáveis de ambiente
 cp .env.example .env
 
+# 4. Efetuar a troca do localhost no .env para rodar APENAS o banco de dados
+POSTGRES_HOST=localhost
+
 # 4. Iniciar banco de dados PostgreSQL
 docker compose up -d database
 
