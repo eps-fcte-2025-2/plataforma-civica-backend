@@ -42,6 +42,12 @@ app.register(reportsRoutes, {
     prefix: "/v1/reports"
 });
 
+// Rotas Públicas
+import { publicRoutes } from "../../modules/public/infra/routes/publicRoutes";
+app.register(publicRoutes, {
+    prefix: "/v1/public"
+});
+
 
 // Error Handler
 app.setErrorHandler((error, _, reply) => {
