@@ -145,9 +145,19 @@ model Evidencia {
   denunciaId String   @db.Uuid
 }
 
-// model User {
-//   id        Int      @id @default(autoincrement())
-//   createdAt DateTime @default(now())
-//   email     String   @unique
-//   name      String?
-// }
+
+enum UserRole {
+  ADMIN
+  MODERATOR
+  SUPER_ADMIN
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         UserRole @default(ADMIN)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}

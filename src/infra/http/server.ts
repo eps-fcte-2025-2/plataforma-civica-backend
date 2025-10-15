@@ -7,6 +7,8 @@ import { exampleRoutes } from "../../modules/example/infra/routes/exampleRoutes"
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { env } from "../../config/envConfig";
 import { HttpError } from "../../shared/errors/interface/HttpError";
+import fastifyJwt from "@fastify/jwt";
+import { userRoutes } from "../../modules/user/infra/routes/userRoutes";
 
 const app = fastify().withTypeProvider<ZodTypeProvider>();
 app.setValidatorCompiler(validatorCompiler);
@@ -15,6 +17,8 @@ app.setSerializerCompiler(serializerCompiler);
 // CORS
 app.register(fastifyCors, { origin: "*" });
 
+// JWT
+app.register(fastifyJwt, { secret: env.JWT_SECRET });
 
 // Swagger
 app.register(fastifySwagger, {
@@ -35,6 +39,7 @@ app.register(fastifySwaggerUi, {
 app.register(exampleRoutes, {
     prefix: "/example"
 });
+app.register(userRoutes); // expõe /users, /sessions, /me, /admin/health
 
 // Rotas de Reports
 import { reportsRoutes } from "../../modules/reports/infra/routes/reportsRoutes";
@@ -67,6 +72,6 @@ app.setErrorHandler((error, _, reply) => {
 });
 
 // Listen
-app.listen({ port: env.PORT, host: "0.0.0.0" }).then(() => {
-    console.log(`HTTP Server running at: http://0.0.0.0:${env.PORT}`);
+app.listen({ port: env.PORT, host: '0.0.0.0' }).then(() => {
+    console.log(`HTTP Server running at: http://localhost:${env.PORT}`);
 });
