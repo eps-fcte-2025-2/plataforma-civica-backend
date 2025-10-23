@@ -1,0 +1,28 @@
+﻿apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: plataforma-civica-ingress
+  namespace: plataforma-civica
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /  # Reescreve as URLs para o path raiz do serviço
+    nginx.ingress.kubernetes.io/use-regex: "true"  # Permite usar expressões regulares nos paths
+spec:
+  ingressClassName: nginx        # Indica que esse ingress será gerenciado pelo NGINX ingress controller
+  rules:
+  - host: plataforma.local       # Host que será usado para acessar a aplicação localmente
+    http:
+      paths:
+      - path: /api(/|$)(.*)      # Tudo que começa com /api vai para o backend
+        pathType: Prefix
+        backend:
+          service:
+            name: backend-service  # Nome do service do backend
+            port:
+              number: 8000         # Porta do backend
+      - path: /(.*)               # Todo o restante vai para o frontend
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-service # Nome do service do frontend
+            port:
+              number: 80           # Porta do frontend

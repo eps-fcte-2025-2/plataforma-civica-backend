@@ -1,0 +1,26 @@
+﻿apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-all
+  namespace: plataforma-civica   # Aplica a política apenas dentro do namespace plataforma-civica
+spec:
+  podSelector: {}                # Seleciona todos os pods do namespace
+  ingress:
+    - from:
+        - podSelector: {}       # Permite tráfego de qualquer pod dentro do namespace
+      ports:
+        - protocol: TCP
+          port: 80              # Permite entrada HTTP
+        - protocol: TCP
+          port: 443             # Permite entrada HTTPS
+  egress:
+    - to:
+        - podSelector: {}       # Permite tráfego de saída para qualquer pod dentro do namespace
+      ports:
+        - protocol: TCP
+          port: 80
+        - protocol: TCP
+          port: 443
+  policyTypes:
+    - Ingress
+    - Egress

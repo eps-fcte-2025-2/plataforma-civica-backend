@@ -1,0 +1,7 @@
+﻿apiVersion: v1
+kind: Namespace
+metadata:
+  name: plataforma-civica       # Nome do namespace onde todos os recursos do projeto vão ficar
+  labels:
+    name: plataforma-civica
+    environment: dev            # Label para diferenciar ambientes (dev, staging, prod)
