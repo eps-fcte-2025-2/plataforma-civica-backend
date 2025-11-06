@@ -9,10 +9,35 @@ import { env } from "../../config/envConfig";
 import { HttpError } from "../../shared/errors/interface/HttpError";
 import fastifyJwt from "@fastify/jwt";
 import { userRoutes } from "../../modules/user/infra/routes/userRoutes";
+import { requestLoggerPlugin } from "../../shared/middlewares/requestLogger";
+import { metricsCollectorPlugin } from "../../shared/middlewares/metricsCollector";
+import { metricsRoutes } from "./routes/metricsRoutes";
 
-const app = fastify().withTypeProvider<ZodTypeProvider>();
+const isDevelopment = process.env.NODE_ENV !== 'production';
+
+const app = fastify({
+    logger: {
+        level: env.LOG_LEVEL || 'info',
+        ...(isDevelopment && {
+            transport: {
+                target: 'pino-pretty',
+                options: {
+                    colorize: true,
+                    translateTime: 'HH:MM:ss Z',
+                    ignore: 'pid,hostname',
+                },
+            },
+        }),
+    },
+}).withTypeProvider<ZodTypeProvider>();
 app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
+
+// Request Logger Middleware
+app.register(requestLoggerPlugin);
+
+// Metrics Collector Middleware
+app.register(metricsCollectorPlugin);
 
 // CORS
 app.register(fastifyCors, { origin: "*" });
@@ -36,6 +61,7 @@ app.register(fastifySwaggerUi, {
 
 
 // Rotas:
+app.register(metricsRoutes); // expõe /metrics e /health
 app.register(exampleRoutes, {
     prefix: "/example"
 });
@@ -64,7 +90,7 @@ app.setErrorHandler((error, _, reply) => {
         });
     }
 
-    console.error(error); // Mudar no futuro para alguma ferramenta de telemetria
+    app.log.error(error, 'Internal server error');
     reply.status(500).send({
         statusCode: 500,
         message: "INTERNAL SERVER ERROR"
@@ -73,5 +99,5 @@ app.setErrorHandler((error, _, reply) => {
 
 // Listen
 app.listen({ port: env.PORT, host: '0.0.0.0' }).then(() => {
-    console.log(`HTTP Server running at: http://localhost:${env.PORT}`);
+    app.log.info(`HTTP Server running at: http://localhost:${env.PORT}`);
 });
