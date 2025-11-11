@@ -1,4 +1,4 @@
-import { FastifyInstance } from "fastify";
+import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import z from "zod";
 import { FastifyTypedInstance } from "../../../../shared/types/types";
 import { CreateReportSchema } from "../../dtos/CreateReportDTO";
@@ -9,6 +9,7 @@ import { GetReportByIdController } from "../../controllers/GetReportByIdControll
 import { GetReportsController } from "../../controllers/GetReportsController";
 import { UpdateReportStatusController } from "../../controllers/UpdateReportStatusController";
 import { GetReportsQuerySchemaDTO } from "../../dtos/GetReportsQuerySchemaDTO";
+import { verifyJWT } from "../../../../shared/middlewares/auth";
 
 export async function reportsRoutes(app: FastifyTypedInstance) {
     // POST /v1/reports - Criar nova denúncia
@@ -47,6 +48,7 @@ export async function reportsRoutes(app: FastifyTypedInstance) {
 
     // GET /v1/reports/:id - Visualizar denúncia completa
     app.get("/:id", {
+        preHandler: [verifyJWT],
         schema: {
             tags: ["Reports"],
             summary: "Visualizar denúncia completa",
@@ -60,7 +62,7 @@ export async function reportsRoutes(app: FastifyTypedInstance) {
                 200: ReportResponseSchema
             }
         }
-    }, (request, reply) => {
+    }, (request: FastifyRequest, reply: FastifyReply) => {
         new GetReportByIdController().handle(request, reply);
     });
 
