@@ -1,12 +1,17 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-interface AuthenticatedRequest extends FastifyRequest {
-  user: {
-    sub: string;
-    email: string;
-    role: 'ADMIN' | 'MODERATOR' | 'SUPER_ADMIN';
-  };
+declare module 'fastify' {
+  interface FastifyRequest {
+    jwtVerify(): Promise<void>;
+    user?: {
+      sub: string;
+      email: string;
+      role: 'ADMIN' | 'MODERATOR' | 'SUPER_ADMIN';
+    };
+  }
 }
+
+type AuthenticatedRequest = FastifyRequest;
 
 export class AuthenticationMiddleware {
   async handle(request: FastifyRequest, reply: FastifyReply) {

@@ -1,14 +1,16 @@
-import { FastifyInstance } from "fastify";
-import z from "zod";
-import { FastifyTypedInstance } from "../../../../shared/types/types";
-import { CreateReportSchema } from "../../dtos/CreateReportDTO";
+import { AuthenticationMiddleware, AuthorizationMiddleware } from "../../../../shared/middlewares/auth";
 import { CreateReportResponseSchema, ReportResponseSchema, ReportsListResponseSchema } from "../../dtos/ReportResponseDTO";
-import { UpdateReportStatusSchema } from "../../dtos/UpdateReportStatusDTO";
+
 import { CreateReportController } from "../../controllers/CreateReportController";
+import { CreateReportSchema } from "../../dtos/CreateReportDTO";
+import { FastifyInstance } from "fastify";
+import { FastifyTypedInstance } from "../../../../shared/types/types";
 import { GetReportByIdController } from "../../controllers/GetReportByIdController";
 import { GetReportsController } from "../../controllers/GetReportsController";
-import { UpdateReportStatusController } from "../../controllers/UpdateReportStatusController";
 import { GetReportsQuerySchemaDTO } from "../../dtos/GetReportsQuerySchemaDTO";
+import { UpdateReportStatusController } from "../../controllers/UpdateReportStatusController";
+import { UpdateReportStatusSchema } from "../../dtos/UpdateReportStatusDTO";
+import z from "zod";
 
 export async function reportsRoutes(app: FastifyTypedInstance) {
     // POST /v1/reports - Criar nova denúncia
@@ -64,8 +66,16 @@ export async function reportsRoutes(app: FastifyTypedInstance) {
         new GetReportByIdController().handle(request, reply);
     });
 
+
+    const authMiddleware = new AuthenticationMiddleware();
+    const authorizationMiddleware = new AuthorizationMiddleware();
+
     // PATCH /v1/reports/:id - Atualizar status da denúncia
     app.patch("/:id", {
+        preHandler: [
+            (request, reply) => authMiddleware.handle(request, reply),
+            authorizationMiddleware.requireRole(['ADMIN', 'MODERATOR', 'SUPER_ADMIN'])
+        ],
         schema: {
             tags: ["Reports"],
             summary: "Atualizar status da denúncia",
