@@ -2,4 +2,8 @@ node_modules
 .env
 
 /generated/prisma
+.pnpm-store
 bin/
+
+coverage/
+*.lcov

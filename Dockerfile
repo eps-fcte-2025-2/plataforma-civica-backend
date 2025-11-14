@@ -7,7 +7,7 @@ WORKDIR /app
 RUN npm i -g pnpm
 
 # Copiar arquivos de dependências
-COPY package.json pnpm-lock.yaml* ./
+COPY package.json pnpm-lock.yaml* prisma/ ./
 
 # Instalar dependências
 RUN pnpm install --frozen-lockfile
