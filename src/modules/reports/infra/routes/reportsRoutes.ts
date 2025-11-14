@@ -9,7 +9,7 @@ import { GetReportByIdController } from "../../controllers/GetReportByIdControll
 import { GetReportsController } from "../../controllers/GetReportsController";
 import { UpdateReportStatusController } from "../../controllers/UpdateReportStatusController";
 import { GetReportsQuerySchemaDTO } from "../../dtos/GetReportsQuerySchemaDTO";
-import { verifyJWT } from "../../../../shared/middlewares/auth";
+import { verifyJWT, createAuthorizationMiddleware, UserRole } from "../../../../shared/middlewares/auth";
 
 export async function reportsRoutes(app: FastifyTypedInstance) {
     // POST /v1/reports - Criar nova denúncia
@@ -48,11 +48,11 @@ export async function reportsRoutes(app: FastifyTypedInstance) {
 
     // GET /v1/reports/:id - Visualizar denúncia completa
     app.get("/:id", {
-        preHandler: [verifyJWT],
+        preHandler: [createAuthorizationMiddleware(['ADMIN', 'SUPER_ADMIN', 'BACKOFFICE'] as UserRole[])],
         schema: {
             tags: ["Reports"],
             summary: "Visualizar denúncia completa",
-            description: "Obtém todos os detalhes de uma denúncia específica, incluindo entidades relacionadas. Endpoint protegido.",
+            description: "Obtém todos os detalhes de uma denúncia específica, incluindo entidades relacionadas. Endpoint protegido para ADMIN, SUPER_ADMIN ou BACKOFFICE.",
             body: null, // <-- ADICIONADO
             params: z.object({
                 id: z.string().uuid("ID deve ser um UUID válido")

@@ -1,10 +1,12 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
+export type UserRole = 'ADMIN' | 'MODERATOR' | 'SUPER_ADMIN' | 'BACKOFFICE';
+
 interface AuthenticatedRequest extends FastifyRequest {
   user: {
     sub: string;
     email: string;
-    role: 'ADMIN' | 'MODERATOR' | 'SUPER_ADMIN';
+    role: UserRole;
   };
 }
 
@@ -19,7 +21,7 @@ export class AuthenticationMiddleware {
 }
 
 export class AuthorizationMiddleware {
-  requireRole(allowedRoles: string[]) {
+  requireRole(allowedRoles: UserRole[]) {
     return async (request: FastifyRequest, reply: FastifyReply) => {
       const userRole = (request as any).user?.role;
       
@@ -39,3 +41,18 @@ export async function verifyJWT(request: FastifyRequest, reply: FastifyReply) {
 }
 
 export const requireAdmin = verifyJWT;
+
+export function createAuthorizationMiddleware(allowedRoles: UserRole[]) {
+  const authMiddleware = new AuthenticationMiddleware();
+  const authzMiddleware = new AuthorizationMiddleware();
+  
+  return async (request: FastifyRequest, reply: FastifyReply) => {
+    // Primeiro valida autenticação (401)
+    await authMiddleware.handle(request, reply);
+    
+    // Se passou na autenticação, valida autorização (403)
+    if (reply.statusCode === 200 || !reply.sent) {
+      await authzMiddleware.requireRole(allowedRoles)(request, reply);
+    }
+  };
+}
