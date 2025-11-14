@@ -2,14 +2,6 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 
 export type UserRole = 'ADMIN' | 'MODERATOR' | 'SUPER_ADMIN' | 'BACKOFFICE';
 
-interface AuthenticatedRequest extends FastifyRequest {
-  user: {
-    sub: string;
-    email: string;
-    role: UserRole;
-  };
-}
-
 export class AuthenticationMiddleware {
   async handle(request: FastifyRequest, reply: FastifyReply) {
     try {
@@ -34,7 +26,6 @@ export class AuthorizationMiddleware {
   }
 }
 
-// Manter compatibilidade com código antigo
 export async function verifyJWT(request: FastifyRequest, reply: FastifyReply) {
   const authMiddleware = new AuthenticationMiddleware();
   return authMiddleware.handle(request, reply);
