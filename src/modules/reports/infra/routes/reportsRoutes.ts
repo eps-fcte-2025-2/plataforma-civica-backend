@@ -62,7 +62,7 @@ export async function reportsRoutes(app: FastifyTypedInstance) {
                 200: ReportResponseSchema
             }
         }
-    }, (request: FastifyRequest, reply: FastifyReply) => {
+    }, (request, reply) => {
         new GetReportByIdController().handle(request, reply);
     });
 
