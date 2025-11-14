@@ -104,7 +104,9 @@ model Pessoa {
 
   nomePessoa String
   funcaoPessoa String
-  // documentoPessoa String
+  observacoes  String?
+  status       String    @default("ativo")
+  dataRegistro DateTime  @default(now())
 
   Denuncia   Denuncia? @relation(fields: [denunciaId], references: [id])
   denunciaId String?   @db.Uuid
