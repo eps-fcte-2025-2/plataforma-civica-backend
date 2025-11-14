@@ -1,12 +1,12 @@
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
 import { FastifyInstance } from 'fastify';
 import { app as realApp } from '../../../src/infra/http/app'; 
-import { CreateReportSchemaType } from '../../../src/modules/reports/dtos/CreateReportDTO';
+import { CreateReport } from '../../../src/modules/reports/dtos/CreateReportDTO';
 import { webcrypto as crypto } from 'crypto';
 import z from 'zod'; 
 
 const inMemoryDatabase = {
-    reports: [],
+    reports: [] as any[],
 };
 
 const fakePrismaClient = {
@@ -85,11 +85,13 @@ describe('E2E: POST /v1/reports', () => {
 
     it('deve criar uma nova denúncia (Critério de Aceite)', async () => { 
         // Payload válido
-        const payload: CreateReportSchemaType = {
+        const payload: CreateReport = {
             tipoDenuncia: "ESQUEMA_DE_MANIPULACAO",
             descricao: "Este é um teste e2e de denúncia com mais de 10 caracteres.",
             municipio: "São Paulo",
             uf: "SP",
+            pontualOuDisseminado: "DISSEMINADO",
+            frequencia: "FREQUENTE",
             pessoasEnvolvidas: [
                 { nomePessoa: "Pessoa Envolvida 5555", funcaoPessoa: "Jogador" }
             ],
@@ -108,6 +110,7 @@ describe('E2E: POST /v1/reports', () => {
                     tipo: "IMAGEM"
                 }
             ],
+            partidas: []
         };
 
         const response = await app.inject({
