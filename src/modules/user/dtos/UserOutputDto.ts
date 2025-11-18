@@ -6,7 +6,7 @@ export const UserOutputDtoSchema = z.object({
   email: z.string(),
   role: z.enum(['ADMIN', 'MODERATOR', 'SUPER_ADMIN']),
   createdAt: z.date(),
-  updatedAt: z.date()
+  updatedAt: z.date(),
 });
 
 export type UserOutputDto = z.infer<typeof UserOutputDtoSchema>;

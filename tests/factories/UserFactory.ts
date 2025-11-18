@@ -1,4 +1,5 @@
 import { vi } from 'vitest';
+
 import type { UserOutputDto } from '../../src/modules/user/dtos/UserOutputDto';
 
 export class UserFactory {

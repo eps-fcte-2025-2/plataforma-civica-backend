@@ -1,7 +1,7 @@
-import { PrismaClient } from '../../../../../generated/prisma'
-import { IUserRepository } from '../../repositories/IUserRepository';
+import { PrismaClient } from '../../../../../generated/prisma';
 import { CreateUserInputDto } from '../../dtos/CreateUserInputDto';
 import { UserOutputDto } from '../../dtos/UserOutputDto';
+import { IUserRepository } from '../../repositories/IUserRepository';
 
 export class PrismaUserRepository implements IUserRepository {
   constructor(private prisma: PrismaClient) {}
@@ -13,7 +13,7 @@ export class PrismaUserRepository implements IUserRepository {
         email: data.email,
         passwordHash: data.passwordHash,
         role: data.role,
-      }
+      },
     });
 
     return {
@@ -22,13 +22,13 @@ export class PrismaUserRepository implements IUserRepository {
       email: user.email,
       role: user.role as 'ADMIN' | 'MODERATOR' | 'SUPER_ADMIN',
       createdAt: user.createdAt,
-      updatedAt: user.updatedAt
+      updatedAt: user.updatedAt,
     };
   }
 
   async findByEmail(email: string): Promise<(UserOutputDto & { passwordHash: string }) | null> {
     const user = await this.prisma.user.findUnique({
-      where: { email }
+      where: { email },
     });
 
     if (!user) return null;
@@ -40,13 +40,13 @@ export class PrismaUserRepository implements IUserRepository {
       role: user.role as 'ADMIN' | 'MODERATOR' | 'SUPER_ADMIN',
       passwordHash: user.passwordHash,
       createdAt: user.createdAt,
-      updatedAt: user.updatedAt
+      updatedAt: user.updatedAt,
     };
   }
 
   async findById(id: string): Promise<UserOutputDto | null> {
     const user = await this.prisma.user.findUnique({
-      where: { id }
+      where: { id },
     });
 
     if (!user) return null;
@@ -57,7 +57,7 @@ export class PrismaUserRepository implements IUserRepository {
       email: user.email,
       role: user.role as 'ADMIN' | 'MODERATOR' | 'SUPER_ADMIN',
       createdAt: user.createdAt,
-      updatedAt: user.updatedAt
+      updatedAt: user.updatedAt,
     };
   }
 }

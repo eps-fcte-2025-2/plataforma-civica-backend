@@ -1,8 +1,8 @@
-import { DashboardMetricsResponse } from "../dtos/DashboardMetricsDTO";
+import { DashboardMetricsResponse } from '../dtos/DashboardMetricsDTO';
 
 export interface PublicRepository {
-    /**
-     * Obtém métricas públicas e anonimizadas para o dashboard
-     */
-    getDashboardMetrics(): Promise<DashboardMetricsResponse>;
+  /**
+   * Obtém métricas públicas e anonimizadas para o dashboard
+   */
+  getDashboardMetrics(): Promise<DashboardMetricsResponse>;
 }

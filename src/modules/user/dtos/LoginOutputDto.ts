@@ -6,8 +6,8 @@ export const LoginOutputDtoSchema = z.object({
     id: z.string(),
     name: z.string(),
     email: z.string(),
-    role: z.enum(['ADMIN', 'MODERATOR', 'SUPER_ADMIN'])
-  })
+    role: z.enum(['ADMIN', 'MODERATOR', 'SUPER_ADMIN']),
+  }),
 });
 
 export type LoginOutputDto = z.infer<typeof LoginOutputDtoSchema>;
