@@ -1,15 +1,5 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-declare module 'fastify' {
-  interface FastifyRequest {
-    jwtVerify(): Promise<void>;
-    user?: {
-      sub: string;
-      email: string;
-      role: 'ADMIN' | 'MODERATOR' | 'SUPER_ADMIN';
-    };
-  }
-}
 export type UserRole = 'ADMIN' | 'MODERATOR' | 'SUPER_ADMIN' | 'BACKOFFICE';
 
 type AuthenticatedRequest = FastifyRequest;
