@@ -33,14 +33,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Configurar Node.js 18
-        uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'npm'
 
-      - name: Instalar dependências
-        run: npm ci
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Rodar testes e gerar cobertura
         run: npm test -- --coverage
