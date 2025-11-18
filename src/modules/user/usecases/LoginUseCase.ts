@@ -1,8 +1,9 @@
 import bcrypt from 'bcryptjs';
-import { IUserRepository } from '../repositories/IUserRepository';
+
+import { UnauthorizedError } from '../../../shared/errors/UnauthorizedError';
 import { LoginInputDto } from '../dtos/LoginInputDto';
 import { LoginOutputDto } from '../dtos/LoginOutputDto';
-import { UnauthorizedError } from '../../../shared/errors/UnauthorizedError';
+import { IUserRepository } from '../repositories/IUserRepository';
 
 export class LoginUseCase {
   constructor(
@@ -27,7 +28,7 @@ export class LoginUseCase {
     const token = await this.jwtSign({
       sub: user.id,
       email: user.email,
-      role: user.role
+      role: user.role,
     });
 
     return {
@@ -36,8 +37,8 @@ export class LoginUseCase {
         id: user.id,
         name: user.name,
         email: user.email,
-        role: user.role
-      }
+        role: user.role,
+      },
     };
   }
 }

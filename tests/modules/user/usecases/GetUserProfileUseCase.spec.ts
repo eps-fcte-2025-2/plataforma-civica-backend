@@ -1,15 +1,16 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
+import type { IUserRepository } from '../../../../src/modules/user/repositories/IUserRepository';
 import { GetUserProfileUseCase } from '../../../../src/modules/user/usecases/GetUserProfileUseCase';
 import { NotFoundError } from '../../../../src/shared/errors/NotFoundError';
 import { UserFactory } from '../../../../tests/factories/UserFactory';
-import type { IUserRepository } from '../../../../src/modules/user/repositories/IUserRepository';
 
 describe('GetUserProfileUseCase', () => {
   it('deve retornar o usuário quando encontrado', async () => {
     const mockUser = UserFactory.createUserOutput();
     const mockUserRepository = UserFactory.createUserRepositoryMock() as IUserRepository;
     mockUserRepository.findById = vi.fn().mockResolvedValue(mockUser);
-    
+
     const useCase = new GetUserProfileUseCase(mockUserRepository);
 
     const result = await useCase.execute('123');
@@ -26,16 +27,12 @@ describe('GetUserProfileUseCase', () => {
   it('deve lançar NotFoundError quando usuário não for encontrado', async () => {
     const mockUserRepository = UserFactory.createUserRepositoryMock() as IUserRepository;
     mockUserRepository.findById = vi.fn().mockResolvedValue(null);
-    
+
     const useCase = new GetUserProfileUseCase(mockUserRepository);
 
-    await expect(useCase.execute('999'))
-      .rejects
-      .toThrow(NotFoundError);
+    await expect(useCase.execute('999')).rejects.toThrow(NotFoundError);
 
-    await expect(useCase.execute('999'))
-      .rejects
-      .toThrow('Usuário não encontrado');
+    await expect(useCase.execute('999')).rejects.toThrow('Usuário não encontrado');
 
     expect(mockUserRepository.findById).toHaveBeenCalledWith('999');
   });
@@ -45,12 +42,10 @@ describe('GetUserProfileUseCase', () => {
     const mockUserRepository = UserFactory.createUserRepositoryMock() as IUserRepository;
     const repoError = new Error('Erro no banco de dados');
     mockUserRepository.findById = vi.fn().mockRejectedValue(repoError);
-    
+
     const useCase = new GetUserProfileUseCase(mockUserRepository);
 
-    await expect(useCase.execute('123'))
-      .rejects
-      .toThrow('Erro no banco de dados');
+    await expect(useCase.execute('123')).rejects.toThrow('Erro no banco de dados');
 
     expect(mockUserRepository.findById).toHaveBeenCalledWith('123');
   });
@@ -60,7 +55,7 @@ describe('GetUserProfileUseCase', () => {
     const mockUser = UserFactory.createUserOutput({ role: 'MODERATOR' });
     const mockUserRepository = UserFactory.createUserRepositoryMock() as IUserRepository;
     mockUserRepository.findById = vi.fn().mockResolvedValue(mockUser);
-    
+
     const useCase = new GetUserProfileUseCase(mockUserRepository);
 
     const result = await useCase.execute('456');
@@ -70,14 +65,14 @@ describe('GetUserProfileUseCase', () => {
   });
 
   it('Adicional: deve retornar usuário com email customizado', async () => {
-    const mockUser = UserFactory.createUserOutput({ 
-      id: '789', 
+    const mockUser = UserFactory.createUserOutput({
+      id: '789',
       email: 'custom@email.com',
-      name: 'Maria Santos' 
+      name: 'Maria Santos',
     });
     const mockUserRepository = UserFactory.createUserRepositoryMock() as IUserRepository;
     mockUserRepository.findById = vi.fn().mockResolvedValue(mockUser);
-    
+
     const useCase = new GetUserProfileUseCase(mockUserRepository);
 
     const result = await useCase.execute('789');
