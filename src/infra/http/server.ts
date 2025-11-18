@@ -1,8 +1,7 @@
-import { app } from './app';
 import { env } from '../../config/envConfig';
-
 // Rotas Públicas
 import { publicRoutes } from '../../modules/public/infra/routes/publicRoutes';
+import { app } from './app';
 app.register(publicRoutes, {
   prefix: '/v1/public',
 });

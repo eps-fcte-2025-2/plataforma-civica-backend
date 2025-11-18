@@ -1,6 +1,7 @@
+import z from 'zod';
+
 import { DatabaseConnection } from '../../../infra/database/DatabaseConnection';
 import { Controller, TypedRequest, TypedResponse } from '../../../shared/patterns/Controller';
-import z from 'zod';
 
 // DEPRECATED: Controller removido após mudança para campos de string
 // Agora os municípios são gerenciados via API externa (ex: IBGE)

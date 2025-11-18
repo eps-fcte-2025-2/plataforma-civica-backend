@@ -1,4 +1,5 @@
 import pino from 'pino';
+
 import { env } from './envConfig';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';

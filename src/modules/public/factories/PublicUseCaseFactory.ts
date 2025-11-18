@@ -1,5 +1,5 @@
-import { GetDashboardMetricsUseCase } from '../usecases/GetDashboardMetricsUseCase';
 import { PublicRepositoryImpl } from '../infra/repositories/PublicRepositoryImpl';
+import { GetDashboardMetricsUseCase } from '../usecases/GetDashboardMetricsUseCase';
 
 export class PublicUseCaseFactory {
   static createGetDashboardMetricsUseCase(): GetDashboardMetricsUseCase {

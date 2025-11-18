@@ -1,9 +1,9 @@
 import { Controller, TypedRequest, TypedResponse } from '../../../shared/patterns/Controller';
-import { ReportsListResponseSchemaType } from '../dtos/ReportResponseDTO';
 import {
   GetReportsQuerySchemaDTO,
   GetReportsQuerySchemaType,
 } from '../dtos/GetReportsQuerySchemaDTO'; // <-- Importe o novo tipo
+import { ReportsListResponseSchemaType } from '../dtos/ReportResponseDTO';
 import { buildGetReportsUseCase } from '../factories/ReportsUseCaseFactory';
 
 export class GetReportsController

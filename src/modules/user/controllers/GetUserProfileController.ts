@@ -1,4 +1,5 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
+import { FastifyReply,FastifyRequest } from 'fastify';
+
 import { GetUserProfileUseCase } from '../usecases/GetUserProfileUseCase';
 
 interface AuthenticatedRequest extends FastifyRequest {

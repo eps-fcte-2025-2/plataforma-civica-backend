@@ -1,5 +1,5 @@
 import { Controller, TypedRequest, TypedResponse } from '../../../shared/patterns/Controller';
-import { CreateReportSchemaType, CreateReport } from '../dtos/CreateReportDTO';
+import { CreateReport,CreateReportSchemaType } from '../dtos/CreateReportDTO';
 import { CreateReportResponseSchemaType } from '../dtos/ReportResponseDTO';
 import { buildCreateReportUseCase } from '../factories/ReportsUseCaseFactory';
 

@@ -1,6 +1,7 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
-import { LoginUseCase } from '../usecases/LoginUseCase';
+import { FastifyReply,FastifyRequest } from 'fastify';
+
 import { LoginInputDto } from '../dtos/LoginInputDto';
+import { LoginUseCase } from '../usecases/LoginUseCase';
 
 export class LoginController {
   constructor(private loginUseCase: LoginUseCase) {}

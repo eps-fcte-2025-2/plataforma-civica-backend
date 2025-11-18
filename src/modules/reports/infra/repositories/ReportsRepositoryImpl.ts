@@ -1,10 +1,10 @@
 import { Prisma, PrismaClient } from '../../../../../generated/prisma';
 import { DatabaseConnection } from '../../../../infra/database/DatabaseConnection';
 import { CreateReport } from '../../dtos/CreateReportDTO';
-import { UpdateReportStatus } from '../../dtos/UpdateReportStatusDTO';
-import { ReportResponse, ReportSummaryResponse } from '../../dtos/ReportResponseDTO';
-import { ReportsRepository } from '../../repositories/ReportsRepository';
 import { FindManyReportsOptionsDTO } from '../../dtos/FindManyReportsOptionsDTO';
+import { ReportResponse, ReportSummaryResponse } from '../../dtos/ReportResponseDTO';
+import { UpdateReportStatus } from '../../dtos/UpdateReportStatusDTO';
+import { ReportsRepository } from '../../repositories/ReportsRepository';
 export class ReportsRepositoryImpl implements ReportsRepository {
   private prisma: PrismaClient;
 

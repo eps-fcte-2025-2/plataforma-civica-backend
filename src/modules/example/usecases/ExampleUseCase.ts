@@ -1,5 +1,5 @@
-import { ResponseDTOExample } from '../dtos/ResponseDTOExample';
 import { Command } from '../../../shared/patterns/Command';
+import { ResponseDTOExample } from '../dtos/ResponseDTOExample';
 import { ExampleRepository } from '../repositories/ExampleRepository';
 
 interface ExampleInput {

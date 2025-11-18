@@ -1,4 +1,5 @@
 import { FastifyInstance } from 'fastify';
+
 import { register } from '../../../config/metricsConfig';
 
 /**

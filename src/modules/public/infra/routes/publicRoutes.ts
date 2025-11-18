@@ -1,6 +1,6 @@
 import { FastifyTypedInstance } from '../../../../shared/types/types';
-import { DashboardMetricsResponseSchema } from '../../dtos/DashboardMetricsDTO';
 import { GetDashboardMetricsController } from '../../controllers/GetDashboardMetricsController';
+import { DashboardMetricsResponseSchema } from '../../dtos/DashboardMetricsDTO';
 
 export async function publicRoutes(app: FastifyTypedInstance) {
   // GET /v1/public/dashboard-metrics - Obter métricas públicas para o dashboard

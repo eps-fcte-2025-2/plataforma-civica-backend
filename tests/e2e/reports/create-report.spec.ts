@@ -1,9 +1,10 @@
-import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
+import { webcrypto as crypto } from 'crypto';
 import { FastifyInstance } from 'fastify';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import z from 'zod';
+
 import { app as realApp } from '../../../src/infra/http/app';
 import { CreateReport } from '../../../src/modules/reports/dtos/CreateReportDTO';
-import { webcrypto as crypto } from 'crypto';
-import z from 'zod';
 
 const inMemoryDatabase = {
   reports: [] as any[],

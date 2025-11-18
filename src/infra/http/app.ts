@@ -1,20 +1,21 @@
-import { fastify } from 'fastify';
 import fastifyCors from '@fastify/cors';
-import {
-  validatorCompiler,
-  serializerCompiler,
-  jsonSchemaTransform,
-} from 'fastify-type-provider-zod';
+import fastifyJwt from '@fastify/jwt';
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUi from '@fastify/swagger-ui';
-import { exampleRoutes } from '../../modules/example/infra/routes/exampleRoutes';
+import { fastify } from 'fastify';
+import {
+  jsonSchemaTransform,
+  serializerCompiler,
+  validatorCompiler,
+} from 'fastify-type-provider-zod';
 import { ZodTypeProvider } from 'fastify-type-provider-zod';
+
 import { env } from '../../config/envConfig';
-import { HttpError } from '../../shared/errors/interface/HttpError';
-import fastifyJwt from '@fastify/jwt';
+import { exampleRoutes } from '../../modules/example/infra/routes/exampleRoutes';
 import { userRoutes } from '../../modules/user/infra/routes/userRoutes';
-import { requestLoggerPlugin } from '../../shared/middlewares/requestLogger';
+import { HttpError } from '../../shared/errors/interface/HttpError';
 import { metricsCollectorPlugin } from '../../shared/middlewares/metricsCollector';
+import { requestLoggerPlugin } from '../../shared/middlewares/requestLogger';
 import { metricsRoutes } from './routes/metricsRoutes';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';

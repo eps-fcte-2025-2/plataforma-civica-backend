@@ -1,18 +1,19 @@
 import { FastifyInstance } from 'fastify';
 import z from 'zod';
+
 import { FastifyTypedInstance } from '../../../../shared/types/types';
+import { CreateReportController } from '../../controllers/CreateReportController';
+import { GetReportByIdController } from '../../controllers/GetReportByIdController';
+import { GetReportsController } from '../../controllers/GetReportsController';
+import { UpdateReportStatusController } from '../../controllers/UpdateReportStatusController';
 import { CreateReportSchema } from '../../dtos/CreateReportDTO';
+import { GetReportsQuerySchemaDTO } from '../../dtos/GetReportsQuerySchemaDTO';
 import {
   CreateReportResponseSchema,
   ReportResponseSchema,
   ReportsListResponseSchema,
 } from '../../dtos/ReportResponseDTO';
 import { UpdateReportStatusSchema } from '../../dtos/UpdateReportStatusDTO';
-import { CreateReportController } from '../../controllers/CreateReportController';
-import { GetReportByIdController } from '../../controllers/GetReportByIdController';
-import { GetReportsController } from '../../controllers/GetReportsController';
-import { UpdateReportStatusController } from '../../controllers/UpdateReportStatusController';
-import { GetReportsQuerySchemaDTO } from '../../dtos/GetReportsQuerySchemaDTO';
 
 export async function reportsRoutes(app: FastifyTypedInstance) {
   // POST /v1/reports - Criar nova denúncia

@@ -1,8 +1,9 @@
 import bcrypt from 'bcryptjs';
-import { IUserRepository } from '../repositories/IUserRepository';
+
+import { UnauthorizedError } from '../../../shared/errors/UnauthorizedError';
 import { LoginInputDto } from '../dtos/LoginInputDto';
 import { LoginOutputDto } from '../dtos/LoginOutputDto';
-import { UnauthorizedError } from '../../../shared/errors/UnauthorizedError';
+import { IUserRepository } from '../repositories/IUserRepository';
 
 export class LoginUseCase {
   constructor(

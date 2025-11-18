@@ -1,8 +1,9 @@
 import { FastifyInstance } from 'fastify';
+
 import {
+  httpErrorCounter,
   httpRequestCounter,
   httpRequestDuration,
-  httpErrorCounter,
   httpRequestsInProgress,
 } from '../../config/metricsConfig';
 

@@ -1,4 +1,5 @@
 import z from 'zod';
+
 import { Controller, TypedRequest, TypedResponse } from '../../../shared/patterns/Controller';
 import { UpdateReportStatusSchemaType } from '../dtos/UpdateReportStatusDTO';
 import { buildUpdateReportStatusUseCase } from '../factories/ReportsUseCaseFactory';

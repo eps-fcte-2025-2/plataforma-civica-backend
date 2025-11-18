@@ -1,8 +1,9 @@
 import bcrypt from 'bcryptjs';
-import { IUserRepository } from '../repositories/IUserRepository';
+
+import { ConflictError } from '../../../shared/errors/ConflictError';
 import { CreateUserInputDto } from '../dtos/CreateUserInputDto';
 import { UserOutputDto } from '../dtos/UserOutputDto';
-import { ConflictError } from '../../../shared/errors/ConflictError';
+import { IUserRepository } from '../repositories/IUserRepository';
 
 export class CreateUserUseCase {
   constructor(private userRepository: IUserRepository) {}

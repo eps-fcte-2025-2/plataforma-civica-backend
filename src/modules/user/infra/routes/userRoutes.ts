@@ -1,13 +1,13 @@
-import { FastifyTypedInstance } from '../../../../shared/types/types';
-import { UserFactory } from '../../factories/UserFactory';
-import { CreateUserInputDtoSchema } from '../../dtos/CreateUserInputDto';
-import { LoginInputDtoSchema } from '../../dtos/LoginInputDto';
-import { UserOutputDtoSchema } from '../../dtos/UserOutputDto';
-import { LoginOutputDtoSchema } from '../../dtos/LoginOutputDto';
 import {
   AuthenticationMiddleware,
   AuthorizationMiddleware,
 } from '../../../../shared/middlewares/auth';
+import { FastifyTypedInstance } from '../../../../shared/types/types';
+import { CreateUserInputDtoSchema } from '../../dtos/CreateUserInputDto';
+import { LoginInputDtoSchema } from '../../dtos/LoginInputDto';
+import { LoginOutputDtoSchema } from '../../dtos/LoginOutputDto';
+import { UserOutputDtoSchema } from '../../dtos/UserOutputDto';
+import { UserFactory } from '../../factories/UserFactory';
 
 export async function userRoutes(app: FastifyTypedInstance) {
   const userFactory = new UserFactory();

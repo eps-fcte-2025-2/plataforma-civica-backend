@@ -1,8 +1,9 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
+import type { IUserRepository } from '../../../../src/modules/user/repositories/IUserRepository';
 import { GetUserProfileUseCase } from '../../../../src/modules/user/usecases/GetUserProfileUseCase';
 import { NotFoundError } from '../../../../src/shared/errors/NotFoundError';
 import { UserFactory } from '../../../../tests/factories/UserFactory';
-import type { IUserRepository } from '../../../../src/modules/user/repositories/IUserRepository';
 
 describe('GetUserProfileUseCase', () => {
   it('deve retornar o usuário quando encontrado', async () => {

@@ -1,7 +1,7 @@
 import { PrismaClient } from '../../../../../generated/prisma';
-import { IUserRepository } from '../../repositories/IUserRepository';
 import { CreateUserInputDto } from '../../dtos/CreateUserInputDto';
 import { UserOutputDto } from '../../dtos/UserOutputDto';
+import { IUserRepository } from '../../repositories/IUserRepository';
 
 export class PrismaUserRepository implements IUserRepository {
   constructor(private prisma: PrismaClient) {}

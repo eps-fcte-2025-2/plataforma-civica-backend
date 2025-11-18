@@ -1,5 +1,5 @@
-import { ReportsListResponse } from '../dtos/ReportResponseDTO';
 import { FindManyReportsOptionsDTO } from '../dtos/FindManyReportsOptionsDTO';
+import { ReportsListResponse } from '../dtos/ReportResponseDTO';
 import { ReportsRepository } from '../repositories/ReportsRepository';
 
 type GetReportsRequest = FindManyReportsOptionsDTO;

@@ -1,7 +1,7 @@
 import { CreateReport } from '../dtos/CreateReportDTO';
-import { UpdateReportStatus } from '../dtos/UpdateReportStatusDTO';
-import { ReportResponse, ReportSummaryResponse } from '../dtos/ReportResponseDTO';
 import { FindManyReportsOptionsDTO } from '../dtos/FindManyReportsOptionsDTO';
+import { ReportResponse, ReportSummaryResponse } from '../dtos/ReportResponseDTO';
+import { UpdateReportStatus } from '../dtos/UpdateReportStatusDTO';
 
 export interface ReportsRepository {
   /**

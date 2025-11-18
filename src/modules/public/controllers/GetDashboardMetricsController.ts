@@ -1,6 +1,7 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
-import { GetDashboardMetricsUseCase } from '../usecases/GetDashboardMetricsUseCase';
+import { FastifyReply,FastifyRequest } from 'fastify';
+
 import { PublicRepositoryImpl } from '../infra/repositories/PublicRepositoryImpl';
+import { GetDashboardMetricsUseCase } from '../usecases/GetDashboardMetricsUseCase';
 
 export class GetDashboardMetricsController {
   async handle(request: FastifyRequest, reply: FastifyReply): Promise<void> {

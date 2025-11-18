@@ -1,6 +1,7 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
-import { CreateUserUseCase } from '../usecases/CreateUserUseCase';
+import { FastifyReply,FastifyRequest } from 'fastify';
+
 import { CreateUserInputDto } from '../dtos/CreateUserInputDto';
+import { CreateUserUseCase } from '../usecases/CreateUserUseCase';
 
 export class CreateUserController {
   constructor(private createUserUseCase: CreateUserUseCase) {}
