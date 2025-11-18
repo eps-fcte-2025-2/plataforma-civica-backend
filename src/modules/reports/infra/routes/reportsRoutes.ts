@@ -1,14 +1,15 @@
+import { AuthenticationMiddleware, AuthorizationMiddleware } from "../../../../shared/middlewares/auth";
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
-import z from "zod";
 import { FastifyTypedInstance } from "../../../../shared/types/types";
 import { CreateReportSchema } from "../../dtos/CreateReportDTO";
 import { CreateReportResponseSchema, ReportResponseSchema, ReportsListResponseSchema } from "../../dtos/ReportResponseDTO";
-import { UpdateReportStatusSchema } from "../../dtos/UpdateReportStatusDTO";
 import { CreateReportController } from "../../controllers/CreateReportController";
 import { GetReportByIdController } from "../../controllers/GetReportByIdController";
 import { GetReportsController } from "../../controllers/GetReportsController";
-import { UpdateReportStatusController } from "../../controllers/UpdateReportStatusController";
 import { GetReportsQuerySchemaDTO } from "../../dtos/GetReportsQuerySchemaDTO";
+import { UpdateReportStatusController } from "../../controllers/UpdateReportStatusController";
+import { UpdateReportStatusSchema } from "../../dtos/UpdateReportStatusDTO";
+import z from "zod";
 import { verifyJWT, createAuthorizationMiddleware, UserRole } from "../../../../shared/middlewares/auth";
 
 export async function reportsRoutes(app: FastifyTypedInstance) {
@@ -76,29 +77,31 @@ export async function reportsRoutes(app: FastifyTypedInstance) {
         new GetReportByIdController().handle(request, reply);
     });
 
-  // PATCH /v1/reports/:id - Atualizar status da denúncia
-  app.patch(
-    '/:id',
-    {
-      schema: {
-        tags: ['Reports'],
-        summary: 'Atualizar status da denúncia',
-        description:
-          'Atualiza o status de uma denúncia específica. Endpoint protegido para backoffice.',
-        body: UpdateReportStatusSchema,
-        params: z.object({
-          id: z.string().uuid('ID deve ser um UUID válido'),
-        }),
-        querystring: null, // <-- ADICIONADO
-        response: {
-          200: z.object({
-            message: z.string(),
-          }),
-        },
-      },
-    },
-    (request, reply) => {
-      new UpdateReportStatusController().handle(request, reply);
-    }
-  );
+    const authMiddleware = new AuthenticationMiddleware();
+    const authorizationMiddleware = new AuthorizationMiddleware();
+
+    // PATCH /v1/reports/:id - Atualizar status da denúncia
+    app.patch("/:id", {
+        preHandler: [
+            (request, reply) => authMiddleware.handle(request, reply),
+            authorizationMiddleware.requireRole(['ADMIN', 'MODERATOR', 'SUPER_ADMIN'])
+        ],
+        schema: {
+            tags: ["Reports"],
+            summary: "Atualizar status da denúncia",
+            description: "Atualiza o status de uma denúncia específica. Endpoint protegido para backoffice.",
+            body: UpdateReportStatusSchema,
+            params: z.object({
+                id: z.string().uuid("ID deve ser um UUID válido")
+            }),
+            querystring: null, // <-- ADICIONADO
+            response: {
+                200: z.object({
+                    message: z.string()
+                })
+            }
+        }
+    }, (request, reply) => {
+        new UpdateReportStatusController().handle(request, reply);
+    });
 }

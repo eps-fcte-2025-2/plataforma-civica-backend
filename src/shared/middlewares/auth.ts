@@ -2,6 +2,8 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 
 export type UserRole = 'ADMIN' | 'MODERATOR' | 'SUPER_ADMIN' | 'BACKOFFICE';
 
+type AuthenticatedRequest = FastifyRequest;
+
 export class AuthenticationMiddleware {
   async handle(request: FastifyRequest, reply: FastifyReply) {
     try {
