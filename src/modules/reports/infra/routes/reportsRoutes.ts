@@ -1,19 +1,15 @@
-import { FastifyInstance } from 'fastify';
-import z from 'zod';
-
-import { FastifyTypedInstance } from '../../../../shared/types/types';
-import { CreateReportController } from '../../controllers/CreateReportController';
-import { GetReportByIdController } from '../../controllers/GetReportByIdController';
-import { GetReportsController } from '../../controllers/GetReportsController';
-import { UpdateReportStatusController } from '../../controllers/UpdateReportStatusController';
-import { CreateReportSchema } from '../../dtos/CreateReportDTO';
-import { GetReportsQuerySchemaDTO } from '../../dtos/GetReportsQuerySchemaDTO';
-import {
-  CreateReportResponseSchema,
-  ReportResponseSchema,
-  ReportsListResponseSchema,
-} from '../../dtos/ReportResponseDTO';
-import { UpdateReportStatusSchema } from '../../dtos/UpdateReportStatusDTO';
+import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
+import z from "zod";
+import { FastifyTypedInstance } from "../../../../shared/types/types";
+import { CreateReportSchema } from "../../dtos/CreateReportDTO";
+import { CreateReportResponseSchema, ReportResponseSchema, ReportsListResponseSchema } from "../../dtos/ReportResponseDTO";
+import { UpdateReportStatusSchema } from "../../dtos/UpdateReportStatusDTO";
+import { CreateReportController } from "../../controllers/CreateReportController";
+import { GetReportByIdController } from "../../controllers/GetReportByIdController";
+import { GetReportsController } from "../../controllers/GetReportsController";
+import { UpdateReportStatusController } from "../../controllers/UpdateReportStatusController";
+import { GetReportsQuerySchemaDTO } from "../../dtos/GetReportsQuerySchemaDTO";
+import { verifyJWT, createAuthorizationMiddleware, UserRole } from "../../../../shared/middlewares/auth";
 
 export async function reportsRoutes(app: FastifyTypedInstance) {
   // POST /v1/reports - Criar nova denúncia
@@ -60,29 +56,25 @@ export async function reportsRoutes(app: FastifyTypedInstance) {
     }
   );
 
-  // GET /v1/reports/:id - Visualizar denúncia completa
-  app.get(
-    '/:id',
-    {
-      schema: {
-        tags: ['Reports'],
-        summary: 'Visualizar denúncia completa',
-        description:
-          'Obtém todos os detalhes de uma denúncia específica, incluindo entidades relacionadas. Endpoint protegido.',
-        body: null, // <-- ADICIONADO
-        params: z.object({
-          id: z.string().uuid('ID deve ser um UUID válido'),
-        }),
-        querystring: null, // <-- ADICIONADO
-        response: {
-          200: ReportResponseSchema,
-        },
-      },
-    },
-    (request, reply) => {
-      new GetReportByIdController().handle(request, reply);
-    }
-  );
+    // GET /v1/reports/:id - Visualizar denúncia completa
+    app.get("/:id", {
+        preHandler: [createAuthorizationMiddleware(['ADMIN', 'SUPER_ADMIN', 'BACKOFFICE'] as UserRole[])],
+        schema: {
+            tags: ["Reports"],
+            summary: "Visualizar denúncia completa",
+            description: "Obtém todos os detalhes de uma denúncia específica, incluindo entidades relacionadas. Endpoint protegido para ADMIN, SUPER_ADMIN ou BACKOFFICE.",
+            body: null, // <-- ADICIONADO
+            params: z.object({
+                id: z.string().uuid("ID deve ser um UUID válido")
+            }),
+            querystring: null, // <-- ADICIONADO
+            response: {
+                200: ReportResponseSchema
+            }
+        }
+    }, (request, reply) => {
+        new GetReportByIdController().handle(request, reply);
+    });
 
   // PATCH /v1/reports/:id - Atualizar status da denúncia
   app.patch(
