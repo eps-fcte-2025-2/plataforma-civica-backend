@@ -1,9 +1,8 @@
-import z from "zod";
+import z from 'zod';
 
 export const ResponseDTOExampleSchema = z.object({
-    informacoes: z.string().min(1).max(255)
+  informacoes: z.string().min(1).max(255),
 });
-
 
 export type ResponseDTOExampleSchemaType = typeof ResponseDTOExampleSchema;
 

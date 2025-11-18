@@ -1,9 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import { z } from 'zod';
-import {
-  requireAdmin,
-  verifyJWT,
-} from '../../shared/middlewares/auth';
+import { requireAdmin, verifyJWT } from '../../shared/middlewares/auth';
 
 export async function usersRoutes(app: FastifyInstance) {
   const createUserBodySchema = z.object({
@@ -40,7 +37,7 @@ export async function usersRoutes(app: FastifyInstance) {
     const token = await reply.jwtSign({
       sub,
       email: body.email,
-      role: 'ADMIN' as const
+      role: 'ADMIN' as const,
     });
 
     return reply.send({ token });
@@ -52,11 +49,7 @@ export async function usersRoutes(app: FastifyInstance) {
   });
 
   // Rota admin-only
-  app.get(
-    '/admin/health',
-    { preHandler: [requireAdmin] },
-    async (_req, reply) => {
-      return reply.send({ ok: true });
-    }
-  );
+  app.get('/admin/health', { preHandler: [requireAdmin] }, async (_req, reply) => {
+    return reply.send({ ok: true });
+  });
 }

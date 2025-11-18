@@ -16,7 +16,7 @@ export class GetUserProfileController {
     try {
       const userId = request.user.sub;
       const user = await this.getUserProfileUseCase.execute(userId);
-      
+
       return reply.status(200).send(user);
     } catch (error) {
       throw error;

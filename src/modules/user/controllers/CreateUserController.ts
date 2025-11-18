@@ -8,7 +8,7 @@ export class CreateUserController {
   async handle(request: FastifyRequest<{ Body: CreateUserInputDto }>, reply: FastifyReply) {
     try {
       const user = await this.createUserUseCase.execute(request.body);
-      
+
       return reply.status(201).send(user);
     } catch (error) {
       throw error;

@@ -27,7 +27,7 @@ export class LoginUseCase {
     const token = await this.jwtSign({
       sub: user.id,
       email: user.email,
-      role: user.role
+      role: user.role,
     });
 
     return {
@@ -36,8 +36,8 @@ export class LoginUseCase {
         id: user.id,
         name: user.name,
         email: user.email,
-        role: user.role
-      }
+        role: user.role,
+      },
     };
   }
 }

@@ -23,10 +23,7 @@
       "nomeClube": "Sociedade Esportiva Palmeiras"
     }
   ],
-  "focosManipulacao": [
-    "JUIZES",
-    "ATLETAS_DIRIGENTES_COMISSAO"
-  ],
+  "focosManipulacao": ["JUIZES", "ATLETAS_DIRIGENTES_COMISSAO"],
   "evidencias": [
     {
       "nomeOriginal": "video_lance_suspeito.mp4",
@@ -39,7 +36,7 @@
     },
     {
       "nomeOriginal": "audio_conversa.mp3",
-      "nomeArquivo": "evidencia_003_2024.mp3", 
+      "nomeArquivo": "evidencia_003_2024.mp3",
       "caminhoArquivo": "/uploads/evidencias/evidencia_003_2024.mp3",
       "tamanhoBytes": 2457600,
       "mimeType": "audio/mpeg",

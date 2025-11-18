@@ -1,4 +1,4 @@
-import { PrismaClient } from '../../../../generated/prisma'
+import { PrismaClient } from '../../../../generated/prisma';
 import { PrismaUserRepository } from '../infra/repositories/PrismaUserRepository';
 import { CreateUserUseCase } from '../usecases/CreateUserUseCase';
 import { LoginUseCase } from '../usecases/LoginUseCase';

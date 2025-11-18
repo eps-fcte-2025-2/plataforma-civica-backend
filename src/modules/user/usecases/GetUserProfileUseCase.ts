@@ -7,7 +7,7 @@ export class GetUserProfileUseCase {
 
   async execute(userId: string): Promise<UserOutputDto> {
     const user = await this.userRepository.findById(userId);
-    
+
     if (!user) {
       throw new NotFoundError('Usuário não encontrado');
     }

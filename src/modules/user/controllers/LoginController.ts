@@ -8,7 +8,7 @@ export class LoginController {
   async handle(request: FastifyRequest<{ Body: LoginInputDto }>, reply: FastifyReply) {
     try {
       const result = await this.loginUseCase.execute(request.body);
-      
+
       return reply.status(200).send(result);
     } catch (error) {
       throw error;

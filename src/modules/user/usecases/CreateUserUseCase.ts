@@ -20,7 +20,7 @@ export class CreateUserUseCase {
     // Criar usuário
     const user = await this.userRepository.create({
       ...data,
-      passwordHash
+      passwordHash,
     });
 
     return user;

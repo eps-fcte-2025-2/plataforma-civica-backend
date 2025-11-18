@@ -19,52 +19,52 @@ export default tseslint.config(
       'simple-import-sort/exports': 'warn',
     },
   },
-  
+
   {
     ignores: [
       // Dependencies
       'node_modules/**',
       'pnpm-lock.yaml',
-      
+
       // Build outputs
       'dist/**',
       'build/**',
       'out/**',
-      
+
       // Generated files
       'generated/**',
       '*.d.ts',
-      
+
       // Environment files
       '.env*',
-      
+
       // Docker files
       'Dockerfile',
       'docker-compose.yml',
       'docker-entrypoint.sh',
-      
+
       // Prisma generated
       'prisma/migrations/**',
-      
+
       // Logs
       'logs/**',
       '*.log',
       'npm-debug.log*',
       'pnpm-debug.log*',
-      
+
       // Coverage directory
       'coverage/**',
-      
+
       // IDE files
       '.vscode/**',
       '.idea/**',
       '*.swp',
       '*.swo',
-      
+
       // OS generated files
       '.DS_Store',
       'Thumbs.db',
-      
+
       // Config files
       '*.js',
       '*.mjs',
