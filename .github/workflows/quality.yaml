@@ -42,4 +42,3 @@ jobs:
           args: >
             -Dsonar.organization=eps-fcte-2025-2
             -Dsonar.projectKey=eps-fcte-2025-2_plataforma-civica-backend
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
