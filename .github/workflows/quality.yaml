@@ -34,12 +34,11 @@ jobs:
           fetch-depth: 0
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@master
+        uses: SonarSource/sonarcloud-github-action@v2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           args: >
             -Dsonar.organization=eps-fcte-2025-2
-            -Dsonar.projectKey=plataforma-civica-backend
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.projectKey=eps-fcte-2025-2_plataforma-civica-backend
