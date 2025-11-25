@@ -7,3 +7,6 @@ bin/
 
 coverage/
 *.lcov
+
+#IDE files
+.history

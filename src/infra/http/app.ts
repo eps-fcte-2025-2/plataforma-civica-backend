@@ -77,6 +77,12 @@ app.register(reportsRoutes, {
   prefix: '/v1/reports',
 });
 
+// Rotas de Chatbot
+import { messageRoutes } from '../../modules/chatbot/infra/routes/messagingRoutes';
+app.register(messageRoutes, {
+  prefix: '/v1/chatbot',
+});
+
 // Error Handler
 app.setErrorHandler((error, _, reply) => {
   if (error.validation) {
