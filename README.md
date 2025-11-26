@@ -72,6 +72,10 @@ src/
     └── types/                     # Tipos TypeScript compartilhados
 ```
 
+## Modelo de dados
+
+![Modelo de dados](/assets/database-diagram.png)
+
 ## 🚀 Como Executar
 
 ### 📋 Pré-requisitos
