@@ -2,7 +2,9 @@ import dotenv from 'dotenv';
 import dotenvExpand from 'dotenv-expand';
 import { z } from 'zod';
 
-const rawEnv = dotenv.config();
+// Carrega .env.test se estiver em modo de teste
+const envFile = process.env.NODE_ENV === 'test' ? '.env.test' : '.env';
+const rawEnv = dotenv.config({ path: envFile });
 dotenvExpand.expand(rawEnv);
 if (rawEnv.error) {
   throw rawEnv.error;

@@ -153,6 +153,37 @@ DATABASE_URL=postgresql://maeJoana:SenhaDeMais!@database:5555/Policia?schema=pub
 
 ## 🧪 Testes
 
+### Configurar Banco de Teste
+
+```bash
+# 1. Criar banco de teste no PostgreSQL
+psql -U maeJoana -h localhost -p 5555 -d Policia -c "CREATE DATABASE \"Policia_test\";"
+# Senha: SenhaDeMais!
+
+# 2. Aplicar migrations no banco de teste
+pnpm run test:db:setup
+
+# 3. Executar testes
+pnpm test
+
+# 4. Executar testes específicos
+pnpm test Login
+pnpm test Perfil
+
+# 5. Executar em modo watch
+pnpm test:watch
+```
+
+### Scripts de Teste Disponíveis
+
+```bash
+pnpm test                 # Executa todos os testes
+pnpm test:db:setup        # Configura banco de teste (migrations)
+pnpm test:db:reset        # Reseta banco de teste (⚠️ apaga dados)
+pnpm test:watch           # Modo watch
+pnpm test:coverage        # Cobertura de código
+```
+
 ### Dados de Teste
 O projeto inclui arquivos JSON para testes manuais:
 - `test_denuncia.json` - Denúncia básica
