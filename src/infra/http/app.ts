@@ -56,6 +56,16 @@ app.register(fastifySwagger, {
     info: {
       title: 'API - Denuncias de Apostas',
       version: '1.0.0',
+      description: 'API para gerenciamento de denúncias de apostas esportivas',
+    },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
     },
   },
   transform: jsonSchemaTransform,
