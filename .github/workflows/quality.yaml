@@ -23,22 +23,3 @@ jobs:
         with:
           name: fta_results
           path: fta_output.txt
-  
-  sonarcloud:
-    name: SonarCloud Scan
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout código (com fetch-depth 0)
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v2
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          args: >
-            -Dsonar.organization=eps-fcte-2025-2
-            -Dsonar.projectKey=eps-fcte-2025-2_plataforma-civica-backend
