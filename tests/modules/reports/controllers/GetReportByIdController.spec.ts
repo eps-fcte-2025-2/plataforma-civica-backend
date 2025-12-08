@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi, type Mock } from "vitest";
 import { GetReportByIdController } from "../../../../src/modules/reports/controllers/GetReportByIdController";
 import { buildGetReportByIdUseCase } from "../../../../src/modules/reports/factories/ReportsUseCaseFactory";
 
@@ -21,7 +21,7 @@ describe('GetReportByIdController', () => {
     };
 
     // 3. Configura a factory mockada para devolver nosso useCaseMock
-    (buildGetReportByIdUseCase as unknown as vi.Mock).mockReturnValue(useCaseMock);
+    (buildGetReportByIdUseCase as unknown as Mock).mockReturnValue(useCaseMock);
 
     // 4. Mocks do Express (Request e Response)
     requestMock = {
