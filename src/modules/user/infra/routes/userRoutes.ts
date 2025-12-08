@@ -1,6 +1,8 @@
 import {
   AuthenticationMiddleware,
   AuthorizationMiddleware,
+  createAuthorizationMiddleware,
+  UserRole,
 } from '../../../../shared/middlewares/auth';
 import { FastifyTypedInstance } from '../../../../shared/types/types';
 import { CreateUserInputDtoSchema } from '../../dtos/CreateUserInputDto';
@@ -13,22 +15,28 @@ import z from 'zod';
 export async function userRoutes(app: FastifyTypedInstance) {
   const userFactory = new UserFactory();
 
-  // Middleware de autenticação
   const authMiddleware = new AuthenticationMiddleware();
   const authzMiddleware = new AuthorizationMiddleware();
 
-  // POST /auth/register - Criar usuário
   app.post(
     '/auth/register',
     {
+      preHandler: [createAuthorizationMiddleware(['ADMIN', 'SUPER_ADMIN'] as UserRole[])],
       schema: {
         tags: ['Usuários'],
         summary: 'Criar novo usuário',
-        description: 'Registra um novo usuário no sistema',
+        description: 'Registra um novo usuário no sistema. Apenas administradores podem criar usuários.',
+        security: [{ bearerAuth: [] }],
         body: CreateUserInputDtoSchema,
         response: {
           201: UserOutputDtoSchema,
           400: z.object({
+            message: z.string(),
+          }),
+          401: z.object({
+            message: z.string(),
+          }),
+          403: z.object({
             message: z.string(),
           }),
         },
@@ -58,7 +66,7 @@ export async function userRoutes(app: FastifyTypedInstance) {
       },
     },
     async (request, reply) => {
-      const controller = userFactory.loginController(reply.jwtSign.bind(reply));
+      const controller = userFactory.loginController((reply as any).jwtSign.bind(reply));
       return controller.handle(request as any, reply);
     }
   );
