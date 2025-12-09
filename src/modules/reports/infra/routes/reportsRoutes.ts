@@ -7,7 +7,7 @@ import { GetReportsController } from '../../controllers/GetReportsController';
 import { GetReportsQuerySchemaDTO } from '../../dtos/GetReportsQuerySchemaDTO';
 import { UpdateReportStatusController } from '../../controllers/UpdateReportStatusController';
 import { UpdateReportStatusSchema } from '../../dtos/UpdateReportStatusDTO';
-import { createAuthorizationMiddleware, verifyJWT, UserRole } from '../../../../shared/middlewares/auth';
+import { createAuthorizationMiddleware, UserRole } from '../../../../shared/middlewares/auth';
 import z from 'zod';
 
 export async function reportsRoutes(app: FastifyTypedInstance) {
