@@ -8,24 +8,27 @@ import { LoginInputDtoSchema } from '../../dtos/LoginInputDto';
 import { LoginOutputDtoSchema } from '../../dtos/LoginOutputDto';
 import { UserOutputDtoSchema } from '../../dtos/UserOutputDto';
 import { UserFactory } from '../../factories/UserFactory';
+import z from 'zod';
 
 export async function userRoutes(app: FastifyTypedInstance) {
   const userFactory = new UserFactory();
 
-  // Middleware de autenticação
   const authMiddleware = new AuthenticationMiddleware();
   const authzMiddleware = new AuthorizationMiddleware();
 
-  // POST /auth/register - Criar usuário
   app.post(
     '/auth/register',
     {
       schema: {
         tags: ['Usuários'],
-        description: 'Criar novo usuário',
+        summary: 'Criar novo usuário',
+        description: 'Registra um novo usuário no sistema.',
         body: CreateUserInputDtoSchema,
         response: {
           201: UserOutputDtoSchema,
+          400: z.object({
+            message: z.string(),
+          }),
         },
       },
     },
@@ -41,15 +44,19 @@ export async function userRoutes(app: FastifyTypedInstance) {
     {
       schema: {
         tags: ['Usuários'],
-        description: 'Fazer login',
+        summary: 'Fazer login',
+        description: 'Autentica usuário e retorna token JWT',
         body: LoginInputDtoSchema,
         response: {
           200: LoginOutputDtoSchema,
+          401: z.object({
+            message: z.string(),
+          }),
         },
       },
     },
     async (request, reply) => {
-      const controller = userFactory.loginController(reply.jwtSign.bind(reply));
+      const controller = userFactory.loginController((reply as any).jwtSign.bind(reply));
       return controller.handle(request as any, reply);
     }
   );
@@ -61,9 +68,14 @@ export async function userRoutes(app: FastifyTypedInstance) {
       preHandler: [authMiddleware.handle.bind(authMiddleware)],
       schema: {
         tags: ['Usuários'],
-        description: 'Obter perfil do usuário autenticado',
+        summary: 'Obter perfil do usuário autenticado',
+        description: 'Retorna os dados do usuário logado',
+        security: [{ bearerAuth: [] }],
         response: {
           200: UserOutputDtoSchema,
+          401: z.object({
+            message: z.string(),
+          }),
         },
       },
     },
@@ -83,7 +95,21 @@ export async function userRoutes(app: FastifyTypedInstance) {
       ],
       schema: {
         tags: ['Admin'],
-        description: 'Health check para administradores',
+        summary: 'Health check para administradores',
+        description: 'Verifica se o usuário tem permissões de administrador',
+        security: [{ bearerAuth: [] }],
+        response: {
+          200: z.object({
+            status: z.string(),
+            message: z.string(),
+          }),
+          401: z.object({
+            message: z.string(),
+          }),
+          403: z.object({
+            message: z.string(),
+          }),
+        },
       },
     },
     async (request, reply) => {

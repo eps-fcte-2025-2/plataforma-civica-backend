@@ -1,4 +1,5 @@
 import { PrismaClient } from './generated/prisma';
+import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
@@ -42,7 +43,28 @@ enum TipoEvidencia {
 }
 
 async function main() {
-  console.log('🌱 Iniciando seed de múltiplas denúncias...');
+  console.log('Iniciando seed...');
+
+  console.log('Criando usuario admin...');
+  const passwordHash = await bcrypt.hash('admin123', 10);
+  
+  const admin = await prisma.user.upsert({
+    where: { email: 'admin@plataforma.com' },
+    update: {},
+    create: {
+      name: 'Administrador',
+      email: 'admin@plataforma.com',
+      passwordHash,
+      role: 'ADMIN',
+    },
+  });
+  
+  console.log('Usuario admin criado:');
+  console.log('Email: admin@plataforma.com');
+  console.log('Senha: admin123');
+  console.log('Role:', admin.role);
+
+  console.log('Criando denuncias de exemplo...');
 
   for (let i = 1; i <= 10; i++) {
     const denuncia = await prisma.denuncia.create({
@@ -110,7 +132,7 @@ async function main() {
     });
   }
 
-  console.log('✅ Seed de múltiplas denúncias completado com sucesso!');
+  console.log('Seed completado com sucesso!');
 }
 
 main()
@@ -118,7 +140,7 @@ main()
     await prisma.$disconnect();
   })
   .catch(async e => {
-    console.error('❌ Erro durante o seed:', e);
+    console.error('Erro durante o seed:', e);
     await prisma.$disconnect();
     process.exit(1);
   });

@@ -45,7 +45,14 @@ app.register(requestLoggerPlugin);
 app.register(metricsCollectorPlugin);
 
 // CORS
-app.register(fastifyCors, { origin: '*' });
+app.register(fastifyCors, {
+  origin: true,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  exposedHeaders: ['Content-Length', 'Content-Type'],
+  maxAge: 86400,
+});
 
 // JWT
 app.register(fastifyJwt, { secret: env.JWT_SECRET });
@@ -56,6 +63,16 @@ app.register(fastifySwagger, {
     info: {
       title: 'API - Denuncias de Apostas',
       version: '1.0.0',
+      description: 'API para gerenciamento de denúncias de apostas esportivas',
+    },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
     },
   },
   transform: jsonSchemaTransform,
