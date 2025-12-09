@@ -2,12 +2,13 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 
 export type UserRole = 'ADMIN' | 'MODERATOR' | 'SUPER_ADMIN' | 'BACKOFFICE';
 
+type AuthenticatedRequest = FastifyRequest;
+
 export class AuthenticationMiddleware {
   async handle(request: FastifyRequest, reply: FastifyReply) {
     try {
-      const decoded = await request.jwtVerify();
-      (request as any).user = decoded; // garante que user.role exista
-    } catch (err) {
+      await request.jwtVerify();
+    } catch {
       return reply.status(401).send({ message: 'Token inválido ou ausente' });
     }
   }
@@ -16,16 +17,9 @@ export class AuthenticationMiddleware {
 export class AuthorizationMiddleware {
   requireRole(allowedRoles: UserRole[]) {
     return async (request: FastifyRequest, reply: FastifyReply) => {
-      const user = (request as any).user;
-      const userRole = user?.role;
+      const userRole = (request as any).user?.role;
 
-      if (!userRole) {
-        return reply.status(401).send({
-          message: 'Token inválido ou ausente.',
-        });
-      }
-
-      if (!allowedRoles.includes(userRole)) {
+      if (!userRole || !allowedRoles.includes(userRole)) {
         return reply.status(403).send({
           message: 'Acesso negado. Permissões insuficientes.',
         });
@@ -35,17 +29,23 @@ export class AuthorizationMiddleware {
 }
 
 export async function verifyJWT(request: FastifyRequest, reply: FastifyReply) {
-  const auth = new AuthenticationMiddleware();
-  return auth.handle(request, reply);
+  const authMiddleware = new AuthenticationMiddleware();
+  return authMiddleware.handle(request, reply);
 }
 
-export function createAuthorizationMiddleware(roles: UserRole[]) {
-  const auth = new AuthenticationMiddleware();
-  const access = new AuthorizationMiddleware();
+export const requireAdmin = verifyJWT;
 
+export function createAuthorizationMiddleware(allowedRoles: UserRole[]) {
+  const authMiddleware = new AuthenticationMiddleware();
+  const authzMiddleware = new AuthorizationMiddleware();
+  
   return async (request: FastifyRequest, reply: FastifyReply) => {
-    const result = await auth.handle(request, reply);
-    if (reply.sent) return result;
-    return access.requireRole(roles)(request, reply);
+    // Primeiro valida autenticação (401)
+    await authMiddleware.handle(request, reply);
+    
+    // Se passou na autenticação, valida autorização (403)
+    if (reply.statusCode === 200 || !reply.sent) {
+      await authzMiddleware.requireRole(allowedRoles)(request, reply);
+    }
   };
 }
