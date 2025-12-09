@@ -7,7 +7,7 @@ import { GetReportsController } from '../../controllers/GetReportsController';
 import { GetReportsQuerySchemaDTO } from '../../dtos/GetReportsQuerySchemaDTO';
 import { UpdateReportStatusController } from '../../controllers/UpdateReportStatusController';
 import { UpdateReportStatusSchema } from '../../dtos/UpdateReportStatusDTO';
-import { createAuthorizationMiddleware, UserRole } from '../../../../shared/middlewares/auth';
+import { createAuthorizationMiddleware, verifyJWT, UserRole } from '../../../../shared/middlewares/auth';
 import z from 'zod';
 
 export async function reportsRoutes(app: FastifyTypedInstance) {
@@ -49,18 +49,12 @@ export async function reportsRoutes(app: FastifyTypedInstance) {
         querystring: GetReportsQuerySchemaDTO,
         response: {
           200: ReportsListResponseSchema,
-          401: z.object({
-            message: z.string(),
-          }),
-          403: z.object({
-            message: z.string(),
-          }),
+          401: z.object({ message: z.string() }),
+          403: z.object({ message: z.string() }),
         },
       },
     },
-    (request, reply) => {
-      new GetReportsController().handle(request, reply);
-    }
+    (request, reply) => new GetReportsController().handle(request, reply)
   );
 
   app.get('/:id', {
