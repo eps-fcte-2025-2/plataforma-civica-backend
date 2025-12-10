@@ -34,20 +34,23 @@ export class TestDatabaseHelper {
     if (!this.prisma) return;
 
     try {
-      // Lista todas as tabelas e limpa os dados
-      const tablenames = await this.prisma.$queryRaw<
-        Array<{ tablename: string }>
-      >`SELECT tablename FROM pg_tables WHERE schemaname='public'`;
+      // Limpa os dados de todas as tabelas conhecidas do Prisma
+      // Adicione aqui os nomes dos modelos do Prisma conforme definido no schema
+      const models = [
+        // Exemplo: 'user', 'post', 'comment'
+        // Substitua pelos nomes reais dos modelos do seu schema
+        'user',
+        'post',
+        'comment',
+        // ...
+      ];
 
-      for (const { tablename } of tablenames) {
-        if (tablename !== '_prisma_migrations') {
-          try {
-            await this.prisma.$executeRawUnsafe(
-              `TRUNCATE TABLE "public"."${tablename}" CASCADE;`
-            );
-          } catch (error) {
-            console.log(`Aviso: Não foi possível limpar tabela ${tablename}`);
-          }
+      for (const model of models) {
+        try {
+          // @ts-ignore
+          await this.prisma[model].deleteMany();
+        } catch (error) {
+          console.log(`Aviso: Não foi possível limpar modelo ${model}`);
         }
       }
       
