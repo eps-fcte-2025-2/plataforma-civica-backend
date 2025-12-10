@@ -26,8 +26,6 @@ export class UpdatePersonController implements Controller<
     const updatePersonUseCase = buildUpdatePersonUseCase();
     const pessoaAtualizada = await updatePersonUseCase.execute(id, data);
     
-    // Retorna a pessoa atualizada (necessita mapeamento se a interface do UseCase retornar a entidade Prisma pura)
-    // Para simplificar, assumiremos que a entidade Prisma retornada é compatível com o PersonResponseSchema
-    response.status(200).send(pessoaAtualizada as any); 
+    response.status(200).send(pessoaAtualizada); 
   }
 }
