@@ -3,7 +3,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { app } from '../../../../src/infra/http/app';
 import { DatabaseConnection } from '../../../../src/infra/database/DatabaseConnection';
 import { SessionHelper } from '../../../utils/SessionHelper';
-import { randomBytes } from 'crypto';
+import { randomBytes } from 'node:crypto';
 
 const TEST_PASSWORD = randomBytes(12).toString('hex');
 
