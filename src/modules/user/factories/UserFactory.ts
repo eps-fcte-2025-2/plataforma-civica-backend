@@ -1,11 +1,11 @@
-import { PrismaClient } from '../../../../generated/prisma'
+import { PrismaClient } from '../../../../generated/prisma';
+import { CreateUserController } from '../controllers/CreateUserController';
+import { GetUserProfileController } from '../controllers/GetUserProfileController';
+import { LoginController } from '../controllers/LoginController';
 import { PrismaUserRepository } from '../infra/repositories/PrismaUserRepository';
 import { CreateUserUseCase } from '../usecases/CreateUserUseCase';
-import { LoginUseCase } from '../usecases/LoginUseCase';
 import { GetUserProfileUseCase } from '../usecases/GetUserProfileUseCase';
-import { CreateUserController } from '../controllers/CreateUserController';
-import { LoginController } from '../controllers/LoginController';
-import { GetUserProfileController } from '../controllers/GetUserProfileController';
+import { LoginUseCase } from '../usecases/LoginUseCase';
 
 export class UserFactory {
   private prisma: PrismaClient;

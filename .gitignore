@@ -4,3 +4,9 @@ node_modules
 /generated/prisma
 .pnpm-store
 bin/
+
+coverage/
+*.lcov
+
+#IDE files
+.history

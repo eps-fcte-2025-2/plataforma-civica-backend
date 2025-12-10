@@ -21,7 +21,7 @@ echo "Banco de dados PostgreSQL disponivel!"
 
 # Aplicar migrations do Prisma
 echo "Aplicando migrations do Prisma..."
-npx prisma migrate deploy
+npx prisma migrate deploy || npx prisma db push --accept-data-loss
 
 # Verificar se as migrations foram aplicadas
 if [ $? -eq 0 ]; then

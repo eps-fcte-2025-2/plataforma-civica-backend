@@ -32,6 +32,8 @@ O módulo principal de denúncias está **completamente implementado** com:
 | `GET` | `/v1/reports/:id` | Visualizar denúncia específica |
 | `PATCH` | `/v1/reports/:id` | Atualizar status (preparado) |
 | `GET` | `/v1/reports/municipios` | Listar municípios |
+| `GET` | `/v1/chatbot/webhook` | Webhook de verificação (GET) |
+| `POST` | `/v1/chatbot/webhook` | Processar mensagem do chatbot |
 
 ## 🛠 Tecnologias
 
@@ -69,6 +71,10 @@ src/
     ├── patterns/                  # Interfaces de padrões
     └── types/                     # Tipos TypeScript compartilhados
 ```
+
+## Modelo de dados
+
+![Modelo de dados](/assets/database-diagram.png)
 
 ## 🚀 Como Executar
 

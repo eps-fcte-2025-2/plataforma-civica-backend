@@ -2,9 +2,9 @@ name: API - Denuncias - CI
 
 on:
   push:
-    branches: [ "main"]
+    branches: ['main']
   pull_request:
-    branches: [ "main"]
+    branches: ['main']
 
 jobs:
   build:
@@ -39,7 +39,7 @@ jobs:
       - name: Validate Prisma schema
         run: npx prisma validate
         env:
-          DATABASE_URL: "postgresql://user:password@localhost:5432/dbname"
+          DATABASE_URL: 'postgresql://user:password@localhost:5432/dbname'
 
       - name: Run push-only step
         if: github.event_name == 'push'

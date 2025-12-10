@@ -1,169 +1,89 @@
-import { Prisma, PrismaClient } from "../../../../../generated/prisma";
-import { DatabaseConnection } from "../../../../infra/database/DatabaseConnection";
-import { CreateReport } from "../../dtos/CreateReportDTO";
-import { UpdateReportStatus } from "../../dtos/UpdateReportStatusDTO";
-import { ReportResponse, ReportSummaryResponse } from "../../dtos/ReportResponseDTO";
-import { ReportsRepository } from "../../repositories/ReportsRepository";
-import { FindManyReportsOptionsDTO } from "../../dtos/FindManyReportsOptionsDTO";
+import { Prisma, PrismaClient } from '../../../../../generated/prisma';
+import { DatabaseConnection } from '../../../../infra/database/DatabaseConnection';
+import { CreateReport } from '../../dtos/CreateReportDTO';
+import { FindManyReportsOptionsDTO } from '../../dtos/FindManyReportsOptionsDTO';
+import { ReportResponse, ReportSummaryResponse } from '../../dtos/ReportResponseDTO';
+import { UpdateReportStatus } from '../../dtos/UpdateReportStatusDTO';
+import { ReportsRepository } from '../../repositories/ReportsRepository';
 export class ReportsRepositoryImpl implements ReportsRepository {
-    private prisma: PrismaClient;
+  private prisma: PrismaClient;
 
-    constructor() {
-        this.prisma = DatabaseConnection.getConnection();
-    }
+  constructor() {
+    this.prisma = DatabaseConnection.getConnection();
+  }
 
-    async create(data: CreateReport): Promise<string> {
-        return this.prisma.$transaction(async (tx) => {
-            // 1. Criar a denúncia principal
-            const denuncia = await tx.denuncia.create({
-                data: {
-                    tipoDenuncia: data.tipoDenuncia,
-                    descricao: data.descricao,
-                    comoSoube: data.comoSoube,
-                    pontualOuDisseminado: data.pontualOuDisseminado,
-                    frequencia: data.frequencia,
-                    municipio: data.municipio,
-                    uf: data.uf,
-                },
-            });
+  async create(data: CreateReport): Promise<string> {
+    return this.prisma.$transaction(async tx => {
+      // 1. Criar a denúncia principal
+      const denuncia = await tx.denuncia.create({
+        data: {
+          tipoDenuncia: data.tipoDenuncia,
+          descricao: data.descricao,
+          comoSoube: data.comoSoube,
+          pontualOuDisseminado: data.pontualOuDisseminado,
+          frequencia: data.frequencia,
+          municipio: data.municipio,
+          uf: data.uf,
+        },
+      });
 
-            // 2. Criar pessoas envolvidas
-            await Promise.all(
-                data.pessoasEnvolvidas.map((pessoa) =>
-                    tx.pessoa.create({
-                        data: {
-                            nomePessoa: pessoa.nomePessoa,
-                            funcaoPessoa: pessoa.funcaoPessoa,
-                            denunciaId: denuncia.id,
-                        },
-                    })
-                )
-            );
-
-            // 3. Criar/vincular clubes envolvidos
-            for (const clubeData of data.clubesEnvolvidos) {
-                // Verificar se clube já existe
-                const existingClube = await tx.clube.findFirst({
-                    where: {
-                        nomeClube: clubeData.nomeClube,
-                    },
-                });
-
-                if (existingClube) {
-                    // Atualizar clube existente para vincular à denúncia
-                    await tx.clube.update({
-                        where: { id: existingClube.id },
-                        data: { denunciaId: denuncia.id },
-                    });
-                } else {
-                    // Criar novo clube
-                    await tx.clube.create({
-                        data: {
-                            nomeClube: clubeData.nomeClube,
-                            denunciaId: denuncia.id,
-                        },
-                    });
-                }
-            }
-
-            // 4. Criar focos de manipulação
-            await Promise.all(
-                data.focosManipulacao.map((foco) =>
-                    tx.denunciaFoco.create({
-                        data: {
-                            denunciaId: denuncia.id,
-                            foco: foco,
-                        },
-                    })
-                )
-            );
-
-            // 5. Criar evidências
-            if (data.evidencias.length > 0) {
-                await Promise.all(
-                    data.evidencias.map((evidencia) =>
-                        tx.evidencia.create({
-                            data: {
-                                nomeOriginal: evidencia.nomeOriginal,
-                                nomeArquivo: evidencia.nomeArquivo,
-                                caminhoArquivo: evidencia.caminhoArquivo,
-                                tamanhoBytes: evidencia.tamanhoBytes,
-                                mimeType: evidencia.mimeType,
-                                tipo: evidencia.tipo,
-                                descricao: evidencia.descricao,
-                                denunciaId: denuncia.id,
-                            },
-                        })
-                    )
-                );
-            }
-
-            // 6. Criar partidas (se for PARTIDA_ESPECIFICA)
-            if (data.tipoDenuncia === "PARTIDA_ESPECIFICA" && data.partidas.length > 0) {
-                await Promise.all(
-                    data.partidas.map((partida) =>
-                        tx.partida.create({
-                            data: {
-                                torneio: partida.torneio,
-                                dataPartida: new Date(partida.dataPartida),
-                                localPartida: partida.localPartida,
-                                timeA: partida.timeA,
-                                timeB: partida.timeB,
-                                observacoes: partida.observacoes,
-                                denunciaId: denuncia.id,
-                                municipio: partida.municipio,
-                                uf: partida.uf,
-                            },
-                        })
-                    )
-                );
-            }
-
-            return denuncia.id;
-        });
-    }
-
-    async findById(id: string): Promise<ReportResponse | null> {
-        const denuncia = await this.prisma.denuncia.findUnique({
-            where: { id },
-            include: {
-                pessoasEnvolvidas: true,
-                clubesEnvolvidos: true,
-                focosManipulacao: true,
-                evidencias: true,
-                partidas: true,
+      // 2. Criar pessoas envolvidas
+      await Promise.all(
+        data.pessoasEnvolvidas.map(pessoa =>
+          tx.pessoa.create({
+            data: {
+              nomePessoa: pessoa.nomePessoa,
+              funcaoPessoa: pessoa.funcaoPessoa,
+              denunciaId: denuncia.id,
             },
+          })
+        )
+      );
+
+      // 3. Criar/vincular clubes envolvidos
+      for (const clubeData of data.clubesEnvolvidos) {
+        // Verificar se clube já existe
+        const existingClube = await tx.clube.findFirst({
+          where: {
+            nomeClube: clubeData.nomeClube,
+          },
         });
 
-        if (!denuncia) {
-            return null;
+        if (existingClube) {
+          // Atualizar clube existente para vincular à denúncia
+          await tx.clube.update({
+            where: { id: existingClube.id },
+            data: { denunciaId: denuncia.id },
+          });
+        } else {
+          // Criar novo clube
+          await tx.clube.create({
+            data: {
+              nomeClube: clubeData.nomeClube,
+              denunciaId: denuncia.id,
+            },
+          });
         }
+      }
 
-        return {
-            id: denuncia.id,
-            tipoDenuncia: denuncia.tipoDenuncia,
-            descricao: denuncia.descricao,
-            comoSoube: denuncia.comoSoube,
-            pontualOuDisseminado: denuncia.pontualOuDisseminado,
-            frequencia: denuncia.frequencia,
-            dataDenuncia: denuncia.dataDenuncia.toISOString(),
-            municipio: denuncia.municipio,
-            uf: denuncia.uf,
-            pessoasEnvolvidas: denuncia.pessoasEnvolvidas.map((pessoa) => ({
-                id: pessoa.id,
-                nomePessoa: pessoa.nomePessoa,
-                funcaoPessoa: pessoa.funcaoPessoa,
-            })),
-            clubesEnvolvidos: denuncia.clubesEnvolvidos.map((clube) => ({
-                id: clube.id,
-                nomeClube: clube.nomeClube,
-            })),
-            focosManipulacao: denuncia.focosManipulacao.map((foco) => ({
-                id: foco.id,
-                foco: foco.foco,
-            })),
-            evidencias: denuncia.evidencias.map((evidencia) => ({
-                id: evidencia.id,
+      // 4. Criar focos de manipulação
+      await Promise.all(
+        data.focosManipulacao.map(foco =>
+          tx.denunciaFoco.create({
+            data: {
+              denunciaId: denuncia.id,
+              foco: foco,
+            },
+          })
+        )
+      );
+
+      // 5. Criar evidências
+      if (data.evidencias.length > 0) {
+        await Promise.all(
+          data.evidencias.map(evidencia =>
+            tx.evidencia.create({
+              data: {
                 nomeOriginal: evidencia.nomeOriginal,
                 nomeArquivo: evidencia.nomeArquivo,
                 caminhoArquivo: evidencia.caminhoArquivo,
@@ -171,142 +91,229 @@ export class ReportsRepositoryImpl implements ReportsRepository {
                 mimeType: evidencia.mimeType,
                 tipo: evidencia.tipo,
                 descricao: evidencia.descricao,
-                dataUpload: evidencia.dataUpload.toISOString(),
-            })),
-            partidas: denuncia.partidas.map((partida) => ({
-                id: partida.id,
+                denunciaId: denuncia.id,
+              },
+            })
+          )
+        );
+      }
+
+      // 6. Criar partidas (se for PARTIDA_ESPECIFICA)
+      if (data.tipoDenuncia === 'PARTIDA_ESPECIFICA' && data.partidas.length > 0) {
+        await Promise.all(
+          data.partidas.map(partida =>
+            tx.partida.create({
+              data: {
                 torneio: partida.torneio,
-                dataPartida: partida.dataPartida.toISOString(),
+                dataPartida: new Date(partida.dataPartida),
                 localPartida: partida.localPartida,
                 timeA: partida.timeA,
                 timeB: partida.timeB,
                 observacoes: partida.observacoes,
+                denunciaId: denuncia.id,
                 municipio: partida.municipio,
                 uf: partida.uf,
-            })),
-        };
+              },
+            })
+          )
+        );
+      }
+
+      return denuncia.id;
+    });
+  }
+
+  async findById(id: string): Promise<ReportResponse | null> {
+    const denuncia = await this.prisma.denuncia.findUnique({
+      where: { id },
+      include: {
+        pessoasEnvolvidas: true,
+        clubesEnvolvidos: true,
+        focosManipulacao: true,
+        evidencias: true,
+        partidas: true,
+      },
+    });
+
+    if (!denuncia) {
+      return null;
     }
 
-    async findMany(options: FindManyReportsOptionsDTO): Promise<{
-        reports: ReportSummaryResponse[];
-        total: number;
-    }> {
-        const { page, pageSize, filters } = options;
-        const skip = (page - 1) * pageSize;
+    return {
+      id: denuncia.id,
+      tipoDenuncia: denuncia.tipoDenuncia,
+      descricao: denuncia.descricao,
+      comoSoube: denuncia.comoSoube,
+      pontualOuDisseminado: denuncia.pontualOuDisseminado,
+      frequencia: denuncia.frequencia,
+      dataDenuncia: denuncia.dataDenuncia.toISOString(),
+      municipio: denuncia.municipio,
+      uf: denuncia.uf,
+      pessoasEnvolvidas: denuncia.pessoasEnvolvidas.map(pessoa => ({
+        id: pessoa.id,
+        nomePessoa: pessoa.nomePessoa,
+        funcaoPessoa: pessoa.funcaoPessoa,
+      })),
+      clubesEnvolvidos: denuncia.clubesEnvolvidos.map(clube => ({
+        id: clube.id,
+        nomeClube: clube.nomeClube,
+      })),
+      focosManipulacao: denuncia.focosManipulacao.map(foco => ({
+        id: foco.id,
+        foco: foco.foco,
+      })),
+      evidencias: denuncia.evidencias.map(evidencia => ({
+        id: evidencia.id,
+        nomeOriginal: evidencia.nomeOriginal,
+        nomeArquivo: evidencia.nomeArquivo,
+        caminhoArquivo: evidencia.caminhoArquivo,
+        tamanhoBytes: evidencia.tamanhoBytes,
+        mimeType: evidencia.mimeType,
+        tipo: evidencia.tipo,
+        descricao: evidencia.descricao,
+        dataUpload: evidencia.dataUpload.toISOString(),
+      })),
+      partidas: denuncia.partidas.map(partida => ({
+        id: partida.id,
+        torneio: partida.torneio,
+        dataPartida: partida.dataPartida.toISOString(),
+        localPartida: partida.localPartida,
+        timeA: partida.timeA,
+        timeB: partida.timeB,
+        observacoes: partida.observacoes,
+        municipio: partida.municipio,
+        uf: partida.uf,
+      })),
+    };
+  }
 
-        // Agora o TypeScript sabe o que é "Prisma" por causa do import
-        const where: Prisma.DenunciaWhereInput = {};
+  async findMany(options: FindManyReportsOptionsDTO): Promise<{
+    reports: ReportSummaryResponse[];
+    total: number;
+  }> {
+    const { page, pageSize, filters } = options;
+    const skip = (page - 1) * pageSize;
 
-        if (filters.uf) {
-            where.uf = { equals: filters.uf, mode: 'insensitive' };
-        }
-        if (filters.municipio) {
-            where.municipio = { equals: filters.municipio, mode: 'insensitive' };
-        }
-        if (filters.tipoDenuncia) {
-            where.tipoDenuncia = filters.tipoDenuncia;
-        }
-        if (filters.frequencia) {
-            where.frequencia = filters.frequencia;
-        }
-        if (filters.pontualOuDisseminado) {
-            where.pontualOuDisseminado = filters.pontualOuDisseminado;
-        }
+    // Agora o TypeScript sabe o que é "Prisma" por causa do import
+    const where: Prisma.DenunciaWhereInput = {};
 
-        // Filtro por intervalo de datas
-        if (filters.dataInicio || filters.dataFim) {
-            where.dataDenuncia = {};
-            if (filters.dataInicio) {
-                where.dataDenuncia.gte = new Date(filters.dataInicio); // gte: greater than or equal
-            }
-            if (filters.dataFim) {
-                // Adiciona 1 dia para incluir o dia final por completo
-                const dataFim = new Date(filters.dataFim);
-                dataFim.setDate(dataFim.getDate() + 1);
-                where.dataDenuncia.lt = dataFim; // lt: less than
-            }
-        }
-        
-        // Filtro de busca por termo em múltiplos campos
-        if (filters.termoBusca) {
-            where.OR = [
-                { descricao: { contains: filters.termoBusca, mode: 'insensitive' } },
-                { pessoasEnvolvidas: { some: { nomePessoa: { contains: filters.termoBusca, mode: 'insensitive' } } } },
-                { clubesEnvolvidos: { some: { nomeClube: { contains: filters.termoBusca, mode: 'insensitive' } } } },
-                { partidas: { some: { timeA: { contains: filters.termoBusca, mode: 'insensitive' } } } },
-                { partidas: { some: { timeB: { contains: filters.termoBusca, mode: 'insensitive' } } } },
-            ];
-        }
-
-        // 2. Executar as queries com o 'where' construído
-        const [denuncias, total] = await Promise.all([
-            this.prisma.denuncia.findMany({
-                where, // Aplica os filtros aqui
-                skip,
-                take: pageSize,
-                include: {
-                    pessoasEnvolvidas: true,
-                    clubesEnvolvidos: true,
-                    evidencias: true,
-                },
-                orderBy: {
-                    dataDenuncia: "desc",
-                },
-            }),
-            this.prisma.denuncia.count({ where }),
-        ]);
-
-        const reports = denuncias.map((denuncia) => ({
-            id: denuncia.id,
-            tipoDenuncia: denuncia.tipoDenuncia,
-            descricao: denuncia.descricao.substring(0, 200),
-            pontualOuDisseminado: denuncia.pontualOuDisseminado,
-            frequencia: denuncia.frequencia,
-            dataDenuncia: denuncia.dataDenuncia.toISOString(),
-            municipio: denuncia.municipio,
-            uf: denuncia.uf,
-            totalPessoas: denuncia.pessoasEnvolvidas.length,
-            totalClubes: denuncia.clubesEnvolvidos.length,
-            totalEvidencias: denuncia.evidencias.length,
-        }));
-
-        return { reports, total };
+    if (filters.uf) {
+      where.uf = { equals: filters.uf, mode: 'insensitive' };
+    }
+    if (filters.municipio) {
+      where.municipio = { equals: filters.municipio, mode: 'insensitive' };
+    }
+    if (filters.tipoDenuncia) {
+      where.tipoDenuncia = filters.tipoDenuncia;
+    }
+    if (filters.frequencia) {
+      where.frequencia = filters.frequencia;
+    }
+    if (filters.pontualOuDisseminado) {
+      where.pontualOuDisseminado = filters.pontualOuDisseminado;
     }
 
-    async updateStatus(id: string, data: UpdateReportStatus): Promise<void> {
-        const denuncia = await this.prisma.denuncia.findUnique({
-            where: { id },
-        });
-
-        if (!denuncia) {
-            throw new Error("Denúncia não encontrada");
-        }
-
-        await this.prisma.denuncia.update({
-            where: { id },
-            data: {
-                status: data.status,
-                observacoes: data.observacoes
-            }
-        });
-
+    // Filtro por intervalo de datas
+    if (filters.dataInicio || filters.dataFim) {
+      where.dataDenuncia = {};
+      if (filters.dataInicio) {
+        where.dataDenuncia.gte = new Date(filters.dataInicio); // gte: greater than or equal
+      }
+      if (filters.dataFim) {
+        // Adiciona 1 dia para incluir o dia final por completo
+        const dataFim = new Date(filters.dataFim);
+        dataFim.setDate(dataFim.getDate() + 1);
+        where.dataDenuncia.lt = dataFim; // lt: less than
+      }
     }
 
-    async exists(id: string): Promise<boolean> {
-        const denuncia = await this.prisma.denuncia.findUnique({
-            where: { id },
-        });
-
-        return !!denuncia;
+    // Filtro de busca por termo em múltiplos campos
+    if (filters.termoBusca) {
+      where.OR = [
+        { descricao: { contains: filters.termoBusca, mode: 'insensitive' } },
+        {
+          pessoasEnvolvidas: {
+            some: { nomePessoa: { contains: filters.termoBusca, mode: 'insensitive' } },
+          },
+        },
+        {
+          clubesEnvolvidos: {
+            some: { nomeClube: { contains: filters.termoBusca, mode: 'insensitive' } },
+          },
+        },
+        { partidas: { some: { timeA: { contains: filters.termoBusca, mode: 'insensitive' } } } },
+        { partidas: { some: { timeB: { contains: filters.termoBusca, mode: 'insensitive' } } } },
+      ];
     }
 
-    async findClubeByName(name: string): Promise<{ id: string; nomeClube: string } | null> {
-        const clube = await this.prisma.clube.findFirst({
-            where: {
-                nomeClube: name,
-            },
-        });
+    // 2. Executar as queries com o 'where' construído
+    const [denuncias, total] = await Promise.all([
+      this.prisma.denuncia.findMany({
+        where, // Aplica os filtros aqui
+        skip,
+        take: pageSize,
+        include: {
+          pessoasEnvolvidas: true,
+          clubesEnvolvidos: true,
+          evidencias: true,
+        },
+        orderBy: {
+          dataDenuncia: 'desc',
+        },
+      }),
+      this.prisma.denuncia.count({ where }),
+    ]);
 
-        return clube ? { id: clube.id, nomeClube: clube.nomeClube } : null;
+    const reports = denuncias.map(denuncia => ({
+      id: denuncia.id,
+      tipoDenuncia: denuncia.tipoDenuncia,
+      descricao: denuncia.descricao.substring(0, 200),
+      pontualOuDisseminado: denuncia.pontualOuDisseminado,
+      frequencia: denuncia.frequencia,
+      dataDenuncia: denuncia.dataDenuncia.toISOString(),
+      municipio: denuncia.municipio,
+      uf: denuncia.uf,
+      totalPessoas: denuncia.pessoasEnvolvidas.length,
+      totalClubes: denuncia.clubesEnvolvidos.length,
+      totalEvidencias: denuncia.evidencias.length,
+    }));
+
+    return { reports, total };
+  }
+
+  async updateStatus(id: string, data: UpdateReportStatus): Promise<void> {
+    const denuncia = await this.prisma.denuncia.findUnique({
+      where: { id },
+    });
+
+    if (!denuncia) {
+      throw new Error('Denúncia não encontrada');
     }
+
+    await this.prisma.denuncia.update({
+      where: { id },
+      data: {
+        status: data.status,
+        observacoes: data.observacoes,
+      },
+    });
+  }
+
+  async exists(id: string): Promise<boolean> {
+    const denuncia = await this.prisma.denuncia.findUnique({
+      where: { id },
+    });
+
+    return !!denuncia;
+  }
+
+  async findClubeByName(name: string): Promise<{ id: string; nomeClube: string } | null> {
+    const clube = await this.prisma.clube.findFirst({
+      where: {
+        nomeClube: name,
+      },
+    });
+
+    return clube ? { id: clube.id, nomeClube: clube.nomeClube } : null;
+  }
 }

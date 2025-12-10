@@ -1,4 +1,5 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
+import { FastifyReply,FastifyRequest } from 'fastify';
+
 import { GetUserProfileUseCase } from '../usecases/GetUserProfileUseCase';
 
 interface AuthenticatedRequest extends FastifyRequest {
@@ -16,7 +17,7 @@ export class GetUserProfileController {
     try {
       const userId = request.user.sub;
       const user = await this.getUserProfileUseCase.execute(userId);
-      
+
       return reply.status(200).send(user);
     } catch (error) {
       throw error;

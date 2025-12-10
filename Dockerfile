@@ -7,9 +7,10 @@ WORKDIR /app
 RUN npm i -g pnpm
 
 # Copiar arquivos de dependências
-COPY package.json pnpm-lock.yaml* prisma/ ./
+COPY package.json pnpm-lock.yaml* ./
+COPY prisma ./prisma
 
-# Instalar dependências
+# Instalar TODAS as dependências (incluindo dev para ter tsx)
 RUN pnpm install --frozen-lockfile
 
 # Copiar código fonte

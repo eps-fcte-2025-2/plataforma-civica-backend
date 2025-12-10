@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+pnpm-lock.yaml
+
+# Build outputs
+dist/
+build/
+out/
+
+# Generated files
+generated/
+*.d.ts
+
+# Environment files
+.env*
+
+# Docker files
+Dockerfile
+docker-compose.yml
+docker-entrypoint.sh
+
+# Prisma generated
+prisma/migrations/
+
+# Logs
+logs
+*.log
+
+# Package files (manter formatação original)
+package.json
+tsconfig.json
+
+# Markdown files (manter formatação original)
+*.md
+
+# JSON schemas
+*.schema.json
+
+# IDE files
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db

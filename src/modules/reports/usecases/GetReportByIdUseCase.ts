@@ -1,17 +1,17 @@
-import { NotFoundError } from "../../../shared/errors/NotFoundError";
-import { ReportResponse } from "../dtos/ReportResponseDTO";
-import { ReportsRepository } from "../repositories/ReportsRepository";
+import { NotFoundError } from '../../../shared/errors/NotFoundError';
+import { ReportResponse } from '../dtos/ReportResponseDTO';
+import { ReportsRepository } from '../repositories/ReportsRepository';
 
 export class GetReportByIdUseCase {
-    constructor(private reportsRepository: ReportsRepository) {}
+  constructor(private reportsRepository: ReportsRepository) {}
 
-    async execute(id: string): Promise<ReportResponse> {
-        const report = await this.reportsRepository.findById(id);
-        
-        if (!report) {
-            throw new NotFoundError("Denúncia não encontrada");
-        }
+  async execute(id: string): Promise<ReportResponse> {
+    const report = await this.reportsRepository.findById(id);
 
-        return report;
+    if (!report) {
+      throw new NotFoundError('Denúncia não encontrada');
     }
+
+    return report;
+  }
 }
