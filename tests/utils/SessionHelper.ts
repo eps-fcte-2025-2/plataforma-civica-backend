@@ -30,6 +30,9 @@ export class SessionHelper {
       payload: user,
     });
 
+    if (response.statusCode !== 200 && response.statusCode !== 201) {
+      throw new Error(`Failed to create user: ${response.statusCode} - ${response.payload}`);
+    }
     return {
       email: user.email,
       password: user.password,
