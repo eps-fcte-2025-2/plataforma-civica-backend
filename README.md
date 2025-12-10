@@ -194,7 +194,7 @@ Algumas suítes E2E podem apresentar instabilidade quando executadas em paralelo
 
 ```bash
 # Executa toda a suíte em modo serial (desativa paralelismo de arquivos)
-npm test -- --run --no-file-parallelism
+pnpm test -- --run --no-file-parallelism
 # ou
 npx vitest run --no-file-parallelism
 ```
@@ -204,7 +204,7 @@ Sugestão para CI: executar os testes E2E em série ou separar unitários e E2E 
 ```yaml
 # step: run e2e tests serially
 - name: Run E2E tests (serial)
-  run: npm test -- --run --no-file-parallelism
+  run: pnpm test -- --run --no-file-parallelism
 ```
 
 ### Dados de Teste
