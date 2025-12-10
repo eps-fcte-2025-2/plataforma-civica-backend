@@ -3,7 +3,6 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { app } from '../../../../src/infra/http/app';
 import { DatabaseConnection } from '../../../../src/infra/database/DatabaseConnection';
 import { SessionHelper } from '../../../utils/SessionHelper';
-import { PrismaClientKnownRequestError } from '../../../../generated/prisma/runtime/library';
 
 describe('Login e Perfil - Fluxo Completo E2E', () => {
     beforeAll(async () => {
