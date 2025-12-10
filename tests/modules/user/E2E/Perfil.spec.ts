@@ -3,7 +3,9 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { app } from '../../../../src/infra/http/app';
 import { DatabaseConnection } from '../../../../src/infra/database/DatabaseConnection';
 import { SessionHelper } from '../../../utils/SessionHelper';
-import { PrismaClientKnownRequestError } from '../../../../generated/prisma/runtime/library';
+import { randomBytes } from 'node:crypto';
+
+const TEST_PASSWORD = randomBytes(12).toString('hex');
 
 describe('Login e Perfil - Fluxo Completo E2E', () => {
     beforeAll(async () => {
@@ -25,7 +27,7 @@ describe('Login e Perfil - Fluxo Completo E2E', () => {
         // Act - Criar usuário e fazer login
         const session = await SessionHelper.createUserAndLogin(app, {
             email: 'joao@email.com',
-            password: 'senha123',
+            password: TEST_PASSWORD,
             name: 'João Silva',
             role: 'ADMIN',
         });
@@ -57,7 +59,7 @@ describe('Login e Perfil - Fluxo Completo E2E', () => {
         // Act - Criar e logar como MODERATOR
         const session = await SessionHelper.createUserAndLogin(app, {
             email: 'maria@email.com',
-            password: 'senha456',
+            password: TEST_PASSWORD,
             name: 'Maria Santos',
             role: 'MODERATOR',
         });
@@ -84,7 +86,7 @@ describe('Login e Perfil - Fluxo Completo E2E', () => {
         // Act - Criar e logar como SUPER_ADMIN
         const session = await SessionHelper.createUserAndLogin(app, {
             email: 'super@email.com',
-            password: 'supersenha',
+            password: TEST_PASSWORD,
             name: 'Super Admin',
             role: 'SUPER_ADMIN',
         });
@@ -135,7 +137,7 @@ describe('Login e Perfil - Fluxo Completo E2E', () => {
         // Arrange - Criar usuário ADMIN
         const adminSession = await SessionHelper.createUserAndLogin(app, {
             email: 'admin@email.com',
-            password: 'senha123',
+            password: TEST_PASSWORD,
             role: 'ADMIN',
         });
 
@@ -158,7 +160,7 @@ describe('Login e Perfil - Fluxo Completo E2E', () => {
         // Arrange - Criar usuário MODERATOR
         const modSession = await SessionHelper.createUserAndLogin(app, {
             email: 'mod-no-access@email.com',
-            password: 'senha123',
+            password: TEST_PASSWORD,
             role: 'MODERATOR',
         });
 
