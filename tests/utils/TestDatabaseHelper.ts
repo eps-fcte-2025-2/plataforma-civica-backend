@@ -1,5 +1,5 @@
-import { exec } from 'child_process';
-import { promisify } from 'util';
+import { exec } from 'node:child_process';
+import { promisify } from 'node:util';
 
 import { PrismaClient } from '../../generated/prisma';
 
@@ -34,23 +34,32 @@ export class TestDatabaseHelper {
     if (!this.prisma) return;
 
     try {
-      // Limpa os dados de todas as tabelas conhecidas do Prisma
-      // Adicione aqui os nomes dos modelos do Prisma conforme definido no schema
-      const models = [
-        // Exemplo: 'user', 'post', 'comment'
-        // Substitua pelos nomes reais dos modelos do seu schema
-        'user',
-        'post',
-        'comment',
-        // ...
-      ];
+      // Limpa os dados de todas as tabelas conhecidas do Prisma de forma dinâmica.
+      // Isso evita ter que manter uma lista manual de modelos e previne
+      // inconsistências quando novos modelos são adicionados.
+      // Nota: _dmmf é uma API interna do Prisma, mas é amplamente usada em testes
+      // para descobrir dinamicamente os modelos disponíveis.
+      // Usamos deleteMany() para cada model para manter a estrutura do schema.
+
+      // @ts-ignore - acessando propriedade interna do Prisma Client
+      const modelMap = (this.prisma as any)._dmmf?.modelMap;
+      if (!modelMap) {
+        console.warn('Aviso: não foi possível localizar modelMap no Prisma Client; limpeza manual poderá ser necessária.');
+        return;
+      }
+
+      const models = Object.keys(modelMap);
 
       for (const model of models) {
         try {
-          // @ts-ignore
-          await this.prisma[model].deleteMany();
-        } catch (error) {
-          console.log(`Aviso: Não foi possível limpar modelo ${model}`);
+          // @ts-ignore - index access dinâmico
+          await (this.prisma as any)[model].deleteMany();
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            console.warn(`Aviso: Não foi possível limpar modelo ${model}: ${error.message}`);
+          } else {
+            console.warn(`Aviso: Não foi possível limpar modelo ${model}:`, error);
+          }
         }
       }
       
