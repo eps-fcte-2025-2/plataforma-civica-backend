@@ -101,11 +101,16 @@ app.register(messageRoutes, {
 });
 
 // Error Handler
-app.setErrorHandler((error, _, reply) => {
-  if (error.validation) {
+app.setErrorHandler((error: unknown, _, reply) => {
+  // Type guard for validation error
+  if (
+    error instanceof Error &&
+    'validation' in error &&
+    Array.isArray((error as any).validation)
+  ) {
     return reply.status(422).send({
       message: 'Validation failed',
-      issues: error.validation,
+      issues: (error as any).validation,
     });
   }
 
