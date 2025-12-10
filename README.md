@@ -188,6 +188,25 @@ pnpm test:watch           # Modo watch
 pnpm test:coverage        # Cobertura de código
 ```
 
+### Nota sobre execução (paralelismo)
+
+Algumas suítes E2E podem apresentar instabilidade quando executadas em paralelo devido a recursos compartilhados (banco de testes, servidor, fixtures). Se você observar testes E2E intermitentes (por exemplo 404 em endpoints autenticados), execute os testes E2E em modo serial como mitigação rápida:
+
+```bash
+# Executa toda a suíte em modo serial (desativa paralelismo de arquivos)
+npm test -- --run --no-file-parallelism
+# ou
+npx vitest run --no-file-parallelism
+```
+
+Sugestão para CI: executar os testes E2E em série ou separar unitários e E2E em jobs distintos. Exemplo (GitHub Actions):
+
+```yaml
+# step: run e2e tests serially
+- name: Run E2E tests (serial)
+  run: npm test -- --run --no-file-parallelism
+```
+
 ### Dados de Teste
 O projeto inclui arquivos JSON para testes manuais:
 - `test_denuncia.json` - Denúncia básica
