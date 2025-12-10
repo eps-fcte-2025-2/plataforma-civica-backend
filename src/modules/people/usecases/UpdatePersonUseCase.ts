@@ -16,8 +16,8 @@ export class UpdatePersonUseCase {
     try {
         return this.repository.update(id, data);
     } catch (error) {
-         if (error.message === "Pessoa não encontrada.") {
-             throw new NotFoundError('Pessoa não encontrada.');
+         if (error instanceof NotFoundError) {
+             throw error;
          }
          throw error;
     }
