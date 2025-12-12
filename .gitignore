@@ -10,3 +10,5 @@ coverage/
 
 #IDE files
 .history
+
+.vscode/
