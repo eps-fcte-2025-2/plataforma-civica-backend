@@ -11,6 +11,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
+    "test:db:setup": "dotenv -e .env.test -- npx prisma migrate deploy",
+    "test:db:reset": "dotenv -e .env.test -- npx prisma migrate reset --force --skip-seed",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
   },
@@ -42,10 +44,12 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.37.0",
+    "@faker-js/faker": "^10.1.0",
     "@types/node": "^24.5.1",
     "@typescript-eslint/eslint-plugin": "^8.46.1",
     "@typescript-eslint/parser": "^8.46.1",
-    "@vitest/coverage-v8": "^2",
+    "@vitest/coverage-v8": "^3.2.4",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9.37.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "prettier": "^3.6.2",
