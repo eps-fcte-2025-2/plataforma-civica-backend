@@ -4,6 +4,9 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
+    env: {
+      NODE_ENV: 'test',
+    },
     include: ['tests/**/*.spec.ts'],
     exclude: ['node_modules/**', 'dist/**', '**/*.config.*', '**/generated/**', '**/seed.ts'],
     coverage: {
