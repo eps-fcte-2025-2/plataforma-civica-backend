@@ -45,7 +45,14 @@ app.register(requestLoggerPlugin);
 app.register(metricsCollectorPlugin);
 
 // CORS
-app.register(fastifyCors, { origin: '*' });
+app.register(fastifyCors, {
+  origin: true,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  exposedHeaders: ['Content-Length', 'Content-Type'],
+  maxAge: 86400,
+});
 
 // JWT
 app.register(fastifyJwt, { secret: env.JWT_SECRET });
