@@ -157,6 +157,56 @@ DATABASE_URL=postgresql://maeJoana:SenhaDeMais!@database:5555/Policia?schema=pub
 
 ## 🧪 Testes
 
+### Configurar Banco de Teste
+
+```bash
+# 1. Criar banco de teste no PostgreSQL
+psql -U maeJoana -h localhost -p 5555 -d Policia -c "CREATE DATABASE \"Policia_test\";"
+# Senha: SenhaDeMais!
+
+# 2. Aplicar migrations no banco de teste
+pnpm run test:db:setup
+
+# 3. Executar testes
+pnpm test
+
+# 4. Executar testes específicos
+pnpm test Login
+pnpm test Perfil
+
+# 5. Executar em modo watch
+pnpm test:watch
+```
+
+### Scripts de Teste Disponíveis
+
+```bash
+pnpm test                 # Executa todos os testes
+pnpm test:db:setup        # Configura banco de teste (migrations)
+pnpm test:db:reset        # Reseta banco de teste (⚠️ apaga dados)
+pnpm test:watch           # Modo watch
+pnpm test:coverage        # Cobertura de código
+```
+
+### Nota sobre execução (paralelismo)
+
+Algumas suítes E2E podem apresentar instabilidade quando executadas em paralelo devido a recursos compartilhados (banco de testes, servidor, fixtures). Se você observar testes E2E intermitentes (por exemplo 404 em endpoints autenticados), execute os testes E2E em modo serial como mitigação rápida:
+
+```bash
+# Executa toda a suíte em modo serial (desativa paralelismo de arquivos)
+npm test -- --run --no-file-parallelism
+# ou
+npx vitest run --no-file-parallelism
+```
+
+Sugestão para CI: executar os testes E2E em série ou separar unitários e E2E em jobs distintos. Exemplo (GitHub Actions):
+
+```yaml
+# step: run e2e tests serially
+- name: Run E2E tests (serial)
+  run: npm test -- --run --no-file-parallelism
+```
+
 ### Dados de Teste
 O projeto inclui arquivos JSON para testes manuais:
 - `test_denuncia.json` - Denúncia básica
