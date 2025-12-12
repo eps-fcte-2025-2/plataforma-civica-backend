@@ -1,4 +1,5 @@
 import { FastifyInstance } from 'fastify';
+import { faker } from '@faker-js/faker';
 
 import type { LoginOutputDto } from '../../src/modules/user/dtos/LoginOutputDto';
 
@@ -18,9 +19,9 @@ export class SessionHelper {
     userData: Partial<TestUser> = {}
   ): Promise<{ email: string; password: string }> {
     const user = {
-      email: userData.email || `test-${Date.now()}@email.com`,
-      password: userData.password || 'senha123',
-      name: userData.name || 'Test User',
+      email: userData.email || faker.internet.email(),
+      password: userData.password || faker.internet.password(),
+      name: userData.name || faker.person.fullName(),
       role: userData.role || 'ADMIN',
     };
 

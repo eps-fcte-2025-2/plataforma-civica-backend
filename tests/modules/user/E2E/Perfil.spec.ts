@@ -1,41 +1,28 @@
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { faker } from '@faker-js/faker';
+import { describe, expect, it } from 'vitest';
 
 import { app } from '../../../../src/infra/http/app';
-import { DatabaseConnection } from '../../../../src/infra/database/DatabaseConnection';
 import { SessionHelper } from '../../../utils/SessionHelper';
-import { randomBytes } from 'node:crypto';
-
-const TEST_PASSWORD = randomBytes(12).toString('hex');
+import { setupE2ETest } from '../../../setup/e2eSetup';
 
 describe('Login e Perfil - Fluxo Completo E2E', () => {
-    beforeAll(async () => {
-        await app.ready();
-    }, 30000);
-
-    afterAll(async () => {
-        const prisma = DatabaseConnection.getConnection();
-        await prisma.$disconnect();
-        await app.close();
-    }, 30000);
-
-    beforeEach(async () => {
-        const prisma = DatabaseConnection.getConnection();
-        await prisma.user.deleteMany({});
-    });
+    setupE2ETest();
 
     it('deve fazer login e depois buscar o perfil do usuário autenticado', async () => {
+        const payload = {
+            email: faker.internet.email(),
+            password: faker.internet.password(),
+            name: faker.person.fullName(),
+            role: 'ADMIN' as const,
+        };
+
         // Act - Criar usuário e fazer login
-        const session = await SessionHelper.createUserAndLogin(app, {
-            email: 'joao@email.com',
-            password: TEST_PASSWORD,
-            name: 'João Silva',
-            role: 'ADMIN',
-        });
+        const session = await SessionHelper.createUserAndLogin(app, payload);
 
         // Assert - Login bem-sucedido
         expect(session.token).toBeDefined();
-        expect(session.user.email).toBe('joao@email.com');
-        expect(session.user.name).toBe('João Silva');
+        expect(session.user.email).toBe(payload.email);
+        expect(session.user.name).toBe(payload.name);
         expect(session.user.role).toBe('ADMIN');
 
         // Act - Buscar perfil com token
@@ -57,11 +44,9 @@ describe('Login e Perfil - Fluxo Completo E2E', () => {
 
     it('deve permitir login e consulta de perfil para MODERATOR', async () => {
         // Act - Criar e logar como MODERATOR
-        const session = await SessionHelper.createUserAndLogin(app, {
-            email: 'maria@email.com',
-            password: TEST_PASSWORD,
-            name: 'Maria Santos',
-            role: 'MODERATOR',
+        const session = await SessionHelper.createUserAndLogin(app, { 
+            name: 'Maria Santos', 
+            role: 'MODERATOR' 
         });
 
         // Assert - Login
@@ -85,9 +70,6 @@ describe('Login e Perfil - Fluxo Completo E2E', () => {
     it('deve permitir login e consulta de perfil para SUPER_ADMIN', async () => {
         // Act - Criar e logar como SUPER_ADMIN
         const session = await SessionHelper.createUserAndLogin(app, {
-            email: 'super@email.com',
-            password: TEST_PASSWORD,
-            name: 'Super Admin',
             role: 'SUPER_ADMIN',
         });
 
@@ -136,8 +118,6 @@ describe('Login e Perfil - Fluxo Completo E2E', () => {
     it('deve permitir acesso à rota de admin apenas para ADMINs', async () => {
         // Arrange - Criar usuário ADMIN
         const adminSession = await SessionHelper.createUserAndLogin(app, {
-            email: 'admin@email.com',
-            password: TEST_PASSWORD,
             role: 'ADMIN',
         });
 
@@ -159,8 +139,6 @@ describe('Login e Perfil - Fluxo Completo E2E', () => {
     it('deve negar acesso à rota de admin para MODERATOR', async () => {
         // Arrange - Criar usuário MODERATOR
         const modSession = await SessionHelper.createUserAndLogin(app, {
-            email: 'mod-no-access@email.com',
-            password: TEST_PASSWORD,
             role: 'MODERATOR',
         });
 

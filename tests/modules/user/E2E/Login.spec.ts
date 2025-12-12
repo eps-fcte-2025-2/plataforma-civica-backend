@@ -1,31 +1,16 @@
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { faker } from '@faker-js/faker';
+import { describe, expect, it } from 'vitest';
 
 import { app } from '../../../../src/infra/http/app';
 import { SessionHelper } from '../../../utils/SessionHelper';
-import { DatabaseConnection } from '../../../../src/infra/database/DatabaseConnection';
+import { setupE2ETest } from '../../../setup/e2eSetup';
 
 describe('POST /auth/login - Testes E2E', () => {
-    beforeAll(async () => {
-        await app.ready();
-    }, 30000);
-
-    afterAll(async () => {
-        const prisma = DatabaseConnection.getConnection();
-        await prisma.$disconnect();
-        await app.close();
-    }, 30000);
-
-    beforeEach(async () => {
-        const prisma = DatabaseConnection.getConnection();
-        await prisma.user.deleteMany({});
-    });
+    setupE2ETest();
 
     it('deve fazer login com credenciais válidas', async () => {
         // Arrange - Criar usuário
         const credentials = await SessionHelper.createUser(app, {
-            email: 'test-login@email.com',
-            password: 'senha123',
-            name: 'Test User',
             role: 'ADMIN',
         });
 
@@ -43,7 +28,6 @@ describe('POST /auth/login - Testes E2E', () => {
         expect(body.token).toBeDefined();
         expect(body.user).toBeDefined();
         expect(body.user.email).toBe(credentials.email);
-        expect(body.user.name).toBe('Test User');
         expect(body.user.role).toBe('ADMIN');
     });
 
@@ -54,7 +38,7 @@ describe('POST /auth/login - Testes E2E', () => {
             url: '/auth/login',
             payload: {
                 email: 'inexistente@email.com',
-                password: 'senha123',
+                password: faker.internet.password(),
             },
         });
 
@@ -69,7 +53,7 @@ describe('POST /auth/login - Testes E2E', () => {
         // Arrange - Criar usuário
         const credentials = await SessionHelper.createUser(app, {
             email: 'test-wrong-password@email.com',
-            password: 'senhaCorreta',
+            password: faker.internet.password(),
         });
 
         // Act - Tentar login com senha errada
@@ -78,7 +62,7 @@ describe('POST /auth/login - Testes E2E', () => {
             url: '/auth/login',
             payload: {
                 email: credentials.email,
-                password: 'senhaErrada',
+                password: faker.internet.password(),
             },
         });
 
@@ -89,54 +73,6 @@ describe('POST /auth/login - Testes E2E', () => {
         expect(body.message).toBe('Credenciais inválidas');
     });
 
-    it('deve fazer login com usuário MODERATOR', async () => {
-        // Arrange
-        const credentials = await SessionHelper.createUser(app, {
-            email: 'moderator@email.com',
-            password: 'senha456',
-            name: 'Moderator User',
-            role: 'MODERATOR',
-        });
-
-        // Act
-        const response = await app.inject({
-            method: 'POST',
-            url: '/auth/login',
-            payload: credentials,
-        });
-
-        const body = JSON.parse(response.payload);
-
-        // Assert
-        expect(response.statusCode).toBe(200);
-        expect(body.user.role).toBe('MODERATOR');
-        expect(body.user.name).toBe('Moderator User');
-    });
-
-    it('deve fazer login com usuário SUPER_ADMIN', async () => {
-        // Arrange
-        const credentials = await SessionHelper.createUser(app, {
-            email: 'superadmin@email.com',
-            password: 'supersenha',
-            name: 'Super Admin',
-            role: 'SUPER_ADMIN',
-        });
-
-        // Act
-        const response = await app.inject({
-            method: 'POST',
-            url: '/auth/login',
-            payload: credentials,
-        });
-
-        const body = JSON.parse(response.payload);
-
-        // Assert
-        expect(response.statusCode).toBe(200);
-        expect(body.user.role).toBe('SUPER_ADMIN');
-        expect(body.user.name).toBe('Super Admin');
-    });
-
     it('deve validar email no formato correto', async () => {
         // Act
         const response = await app.inject({
@@ -144,7 +80,7 @@ describe('POST /auth/login - Testes E2E', () => {
             url: '/auth/login',
             payload: {
                 email: 'email-invalido',
-                password: 'senha123',
+                password: faker.internet.password(),
             },
         });
 
